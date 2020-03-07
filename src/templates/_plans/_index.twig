@@ -1,0 +1,67 @@
+{# @var craft \craft\web\twig\variables\CraftVariable #}
+{% extends "_layouts/cp" %}
+
+{# The title of this CP section #}
+{% set title = "Subscription plans" %}
+{% set createUrl = url('mollie-subscriptions/plans/add') %}
+{% set selectedSubnavItem = 'plans' %}
+
+{% set crumbs = [
+    { label: "Subscriptions", url: url('mollie-subscriptions') },
+    { label: 'Plans', url: '#' }
+] %}
+
+{% block actionButton %}
+    {% if (not currentUser.admin and settings.anyoneCanAdd) or currentUser.admin %}
+        <div id="button-container">
+            <div class="btngroup submit">
+                <a class="btn submit add icon" href="{{ createUrl }}">
+                    {{ 'Create new plan'|t('mollie-subscriptions') }}
+                </a>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}
+
+{# The content of the CP Section#}
+{% block content %}
+    {% if plans|length %}
+        <table id="plans" class="data fullwidth collapsible">
+            <thead>
+            <tr>
+                <th scope="col">{{ 'ID'|t('mollie-subscriptions') }}</th>
+                <th scope="col">{{ 'Name'|t('mollie-subscriptions') }}</th>
+                <th scope="col">{{ 'Handle'|t('mollie-subscriptions') }}</th>
+                <th scope="col">{{ 'Remove'|t('mollie-subscriptions') }}</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for form in plans %}
+                <tr data-id="{{ form.id }}" data-name="{{ form.title }}">
+                    <td data-title="Id"><code>{{ form.id }}</code></td>
+                    <th scope="row" data-title="Name"><a
+                                href="{{ url('mollie-subscriptions/plans/'~form.id) }}">{{ form.title }}</a></th>
+                    <td data-title="Handle"><code>{{ form.handle }}</code></td>
+                    <td class="thin">
+                        <a class="delete icon" title="Delete" role="button"></a>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
+    {% else %}
+        <div id="noplans">
+            {{ 'No plans found, click "Create new plan" in the top right corner to get started'|t('mollie-subscriptions') }}
+        </div>
+    {% endif %}
+{% endblock %}
+
+{% js %}
+    var adminTable = new Craft.AdminTable({
+    tableSelector: '#plans',
+    noItemsSelector: '#noplans',
+    deleteAction: 'mollie-subscriptions/plan/delete',
+    confirmDeleteMessage: '{{ "Are you sure you want to delete “{name}”?"|t('mollie-subscriptions') }}',
+    });
+{% endjs %}

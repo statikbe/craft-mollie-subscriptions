@@ -1,0 +1,118 @@
+{# @var craft \craft\web\twig\variables\CraftVariable #}
+
+
+{% extends "_layouts/cp" %}
+{% import "_includes/forms" as forms %}
+
+{% set fullPageForm = true %}
+{% set title = form.title is defined ? form.title : 'New subscription plan' %}
+{% set selectedSubnavItem = 'forms' %}
+
+{% set crumbs = [
+    { label: "Payments", url: cpUrl('mollie-subscriptions') },
+    { label: 'Forms', url: cpUrl('mollie-subscriptions/plans') },
+    { label: 'Edit', url: '#'}
+] %}
+
+{# The content of the CP Section#}
+{% block content %}
+    {{ csrfInput() }}
+    {{ actionInput('mollie-subscriptions/plans/save') }}
+    {{ redirectInput('mollie-subscriptions/plans') }}
+    {% if form is defined and form.id is defined %}
+        <input type="hidden" name="data[id]" value="{{ form.id }}">
+    {% endif %}
+    <div class="field" id="name-field">
+        <div class="heading">
+            <label id="name-label" class="required" for="title">{{ 'Title'|t('mollie-subscriptions') }}</label>
+            <div class="instructions"><p>{{ 'What this plan will be called in the CP.'|t('mollie-subscriptions') }}</p>
+            </div>
+        </div>
+        <div class="input ltr {% if errors is defined and errors.title is defined %}errors{% endif %}">
+            <input class="text fullwidth" type="text" id="title" name="data[title]"
+                   {% if form is defined %}value="{{ form.title }}"{% endif %} autofocus=""
+                   autocomplete="off" required="required">
+        </div>
+        {% if errors is defined and errors.title is defined %}
+            <ul class="errors">
+                {% for error in errors.title %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
+    <div class="field" id="handle-field">
+        <div class="heading">
+            <label id="handle-label" class="required" for="handle">{{ 'Handle'|t('mollie-subscriptions') }}</label>
+            <div class="instructions"><p>{{ 'How you’ll refer to this field in the templates.'|t('mollie-subscriptions') }}</p>
+            </div>
+        </div>
+        <div class="input ltr {% if errors is defined and errors.handle is defined %}errors{% endif %}">
+            <input class="text code fullwidth" type="text" id="handle" name="data[handle]"
+                   {% if form is defined %}value="{{ form.handle }}"{% endif %} maxlength="64"
+                   autocomplete="off" required="required">
+        </div>
+        {% if errors is defined and errors.handle is defined %}
+            <ul class="errors">
+                {% for error in errors.handle %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
+
+    {% set availableCurrencies = { '': '---'} %}
+    {% for id, currency in currencies %}
+        {% set availableCurrencies = availableCurrencies|merge([{
+            'label': currency.short  ~ '('~currency.symbol~')',
+            'value': id
+        }]) %}
+    {% endfor %}
+    {{ forms.selectField({
+        label: "Currency"|t('mollie-subscriptions'),
+        id: "currency",
+        name: "data[currency]",
+        required: true,
+        options: availableCurrencies,
+        value: form.currency ?? "",
+        errors: errors is defined and errors.currency is defined ? errors.currency
+    }) }}
+
+    <div class="field" id="handle-field">
+        <div class="heading">
+            <label id="handle-label" for="handle">{{ 'Payment description'|t('mollie-subscriptions') }}</label>
+            <div class="instructions"><p>{{ 'How these payments are called in Mollie. You can include tags that output entry properties, such as {myCustomField}. Defaults to "Order #payment.id".'|t('mollie-subscriptions') }}</p>
+            </div>
+        </div>
+        <div class="input ltr {% if errors is defined and errors.descriptionFormat is defined %}errors{% endif %}">
+            <input class="text code fullwidth" type="text" id="handle" name="data[descriptionFormat]"
+                   {% if form is defined %}value="{{ form.descriptionFormat }}"{% endif %}
+                   autocomplete="off">
+        </div>
+        {% if errors is defined and errors.descriptionFormat is defined %}
+            <ul class="errors">
+                {% for error in errors.descriptionFormat %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
+
+
+
+    {% if form is not defined or not form.handle|length %}
+        {% js %}
+            new Craft.HandleGenerator('#title', '#handle');
+        {% endjs %}
+    {% endif %}
+    {% if form is defined %}
+        {% include "_includes/fieldlayoutdesigner" with {
+            fieldLayout: layout
+        } only %}
+    {% else %}
+        {% include "_includes/fieldlayoutdesigner" with {
+            fieldLayout: craft.app.fields.getLayoutByType('ns\\prefix\\elements\\Product')
+        } only %}
+    {% endif %}
+
+{% endblock %}
