@@ -41,6 +41,10 @@ class SubscriptionPlanModel extends Model
 
     public $description;
 
+    public $amount;
+
+    public $intervalType;
+
     public $interval;
 
     public $times;
@@ -50,29 +54,24 @@ class SubscriptionPlanModel extends Model
     public function rules()
     {
         return [
-            [['title', 'handle', 'currency'], 'required'],
-            [['title', 'handle', 'currency', 'description', 'interval', 'times'], 'safe'],
+            [['title', 'handle', 'currency', 'description', 'interval', 'intervalType', 'amount'], 'required'],
+            [['title', 'handle', 'currency', 'description', 'times','interval', 'intervalType', 'amount'], 'safe'],
             ['handle', 'validateHandle'],
-            ['interval', 'validateInterval'],
+//            ['interval', 'validateInterval'],
         ];
     }
 
-    public function validateInterval() {
+    public function validateInterval()
+    {
         dd($this);
-
-        if($data && $data->id != $this->id) {
-            $this->addError('handle', Craft::t('mollie-subscriptions', 'Handle "{handle}" is already in use', ['handle' => $this->handle]));
-
-        }
-
     }
 
-
-    public function validateHandle() {
+    public function validateHandle()
+    {
         $validator = new HandleValidator();
         $validator->validateAttribute($this, 'handle');
         $data = MollieSubscriptions::getInstance()->plans->getPlanByHandle($this->handle);
-        if($data && $data->id != $this->id) {
+        if ($data && $data->id != $this->id) {
             $this->addError('handle', Craft::t('mollie-subscriptions', 'Handle "{handle}" is already in use', ['handle' => $this->handle]));
 
         }

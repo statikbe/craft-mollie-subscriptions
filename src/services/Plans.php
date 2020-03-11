@@ -11,9 +11,30 @@ use studioespresso\molliesubscriptions\records\SubscriptionPlanRecord;
 
 class Plans extends Component
 {
-    public function save(SubscriptionPlanModel $model)
+    public function save(SubscriptionPlanModel $planModel)
     {
-        dd($model);
+        $planRecord = false;
+        if (isset($planModel->id)) {
+            $planRecord = SubscriptionPlanRecord::findOne([
+                'id' => $planModel->id
+            ]);
+        }
+
+        if (!$planRecord) {
+            $planRecord = new SubscriptionPlanRecord();
+        }
+
+        $planRecord->title = $planModel->title;
+        $planRecord->handle = $planModel->handle;
+        $planRecord->currency = $planModel->currency;
+        $planRecord->description = $planModel->description;
+        $planRecord->amount = $planModel->amount;
+        $planRecord->times = $planModel->times;
+        $planRecord->intervalType = $planModel->intervalType;
+        $planRecord->interval = $planModel->interval;
+        $planRecord->fieldLayout = $planModel->fieldLayout;
+
+        return $planRecord->save();
     }
 
     public function getPlanById($id)

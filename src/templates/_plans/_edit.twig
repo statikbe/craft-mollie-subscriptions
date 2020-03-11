@@ -23,8 +23,8 @@
     {{ csrfInput() }}
     {{ actionInput('mollie-subscriptions/plan/save') }}
     {{ redirectInput('mollie-subscriptions/plans') }}
-    {% if form is defined and form.id is defined %}
-        <input type="hidden" name="planId" value="{{ form.id }} ">
+    {% if plan is defined and plan.id is defined %}
+        <input type="hidden" name="planId" value="{{ plan.id }}">
     {% endif %}
 
 
@@ -61,7 +61,7 @@
         required: true,
         name: "currency",
         options: availableCurrencies,
-        value: form.currency ?? "",
+        value: plan is defined? plan.currency ?? "",
         errors: errors is defined and errors.currency is defined ? errors.currency
     }) }}
 
@@ -70,21 +70,31 @@
         instructions: 'A description unique per subscription. This will be included in the payment description.. You can include tags that output entry properties, such as {myCustomField}. Defaults to "Order #payment.id".'|t('mollie-subscriptions'),
         id: 'description',
         name: 'description',
+        required: true,
         value: plan is defined ? plan.description : '',
         errors: errors is defined and errors.description is defined ? errors.description
+    }) }}
+
+    {{ forms.textField({
+        label: 'Price'|t('mollie-subscriptions'),
+        instructions: 'Price the subscribers will be charged.'|t('mollie-subscriptions'),
+        id: 'amount',
+        required: true,
+        name: 'amount',
+        value: plan is defined ? plan.amount : '',
+        errors: errors is defined and errors.amount is defined ? errors.amount
     }) }}
 
     {{ forms.textField({
         label: 'Numer of charges in the subscription plan'|t('mollie-subscriptions'),
         instructions: 'Total number of charges for the subscription to complete. Leave empty for an ongoing subscription.'|t('mollie-subscriptions'),
         id: 'times',
-        required: true,
         name: 'times',
         value: plan is defined ? plan.times : '',
         errors: errors is defined and errors.times is defined ? errors.times
     }) }}
 
-    <input type="hidden" name="intervalType" value="months">
+    <input type="hidden" name="intervalType" value="monthss">
     {{ forms.selectField({
         label: 'Subscription interval'|t('mollie-subscriptions'),
         instructions: 'Interval to wait between charges.'|t('mollie-subscriptions'),

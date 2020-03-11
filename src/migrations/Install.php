@@ -56,7 +56,8 @@ class Install extends Migration
                     'currency' => $this->string(3)->defaultValue('EUR'),
                     'amount' => $this->decimal("10,2"),
                     'times' => $this->integer(3),
-                    'interval' => $this->string(255),
+                    'interval' => $this->integer(3),
+                    'intervalType' => $this->string(6),
                     'description' => $this->text()->notNull(),
                     'fieldLayout' => $this->integer(10),
                     'dateCreated' => $this->dateTime()->notNull(),
@@ -75,6 +76,6 @@ class Install extends Migration
 
     protected function removeTables()
     {
-//        $this->dropTableIfExists(SubscriptionPlanRecord::tableName());
+        $this->dropTableIfExists(SubscriptionPlanRecord::tableName());
     }
 }
