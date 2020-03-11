@@ -10,6 +10,7 @@
 
 namespace studioespresso\molliesubscriptions\controllers;
 
+use studioespresso\molliesubscriptions\models\SubscriptionPlanModel;
 use studioespresso\molliesubscriptions\MollieSubscriptions;
 
 use Craft;
@@ -39,8 +40,9 @@ class PlanController extends Controller
 {
     // Public Methods
     // =========================================================================
-    public function actionIndex() {
-        return  $this->renderTemplate('mollie-subscriptions/_plans/_index.twig', [
+    public function actionIndex()
+    {
+        return $this->renderTemplate('mollie-subscriptions/_plans/_index.twig', [
             'plans' => []
         ]);
     }
@@ -53,9 +55,46 @@ class PlanController extends Controller
         } else {
             $form = MollieSubscriptions::$plugin->plans->getPlanById($planId);
             $layout = Craft::$app->getFields()->getLayoutById($form->fieldLayout);
-            return $this->renderTemplate('mollie-subscriptions/_plans/_edit', ['plzn' => $plan, 'layout' => $layout, 'currencies' => $currencies]);
+            return $this->renderTemplate('mollie-subscriptions/_plans/_edit', ['plan' => $plan, 'layout' => $layout, 'currencies' => $currencies]);
 
         }
+    }
+
+    public function actionSave()
+    {
+        $fieldLayout = Craft::$app->getFields()->assembleLayoutFromPost();
+        $fieldLayout->type = Payment::class;
+        Craft::$app->getFields()->saveLayout($fieldLayout);
+
+        $planId = Craft::$app->getRequest()->getBodyParam('planId');
+        if(!$planId) {
+            $planModel = new SubscriptionPlanModel();
+        } else {
+            /** @var SubscriptionPlanModel $record */
+            $planRecord = MollieSubscriptions::getInstance()->plans->getPlanById($data['id']);
+            $planModel = new SubscriptionPlanModel();
+            $planModel->id = $record->id ;
+        }
+
+        $planModel->title = Craft::$app->getRequest()->getBodyParam('title');
+        $planModel->handle = Craft::$app->getRequest()->getBodyParam('handle');
+        $planModel->currency = Craft::$app->getRequest()->getBodyParam('currency');
+        $planModel->description = Craft::$app->getRequest()->getBodyParam('description');
+
+        // Save it
+        if (!$planModel->validate()) {
+            Craft::$app->getSession()->setError(Craft::t('mollie-subscriptions', 'Couldn’t save plan.'));
+            Craft::$app->getUrlManager()->setRouteParams([
+                'plan' => $planModel
+            ]);
+            $currencies = MollieSubscriptions::$plugin->currency->getCurrencies();
+            return $this->renderTemplate('mollie-subscriptions/_plans/_edit', ['plan' => $planModel, 'layout' => $fieldLayout, 'currencies' => $currencies]);
+
+        }
+
+        dd($planModel->validate());
+
+
     }
 
 }

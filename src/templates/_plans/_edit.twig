@@ -6,60 +6,47 @@
 
 {% set fullPageForm = true %}
 {% set title = form.title is defined ? form.title : 'New subscription plan' %}
-{% set selectedSubnavItem = 'forms' %}
+{% set selectedSubnavItem = 'plans' %}
 
 {% set crumbs = [
-    { label: "Payments", url: cpUrl('mollie-subscriptions') },
-    { label: 'Forms', url: cpUrl('mollie-subscriptions/plans') },
+    { label: "Subscriptions", url: cpUrl('mollie-subscriptions') },
+    { label: 'Plans', url: cpUrl('mollie-subscriptions/plans') },
     { label: 'Edit', url: '#'}
 ] %}
 
 {# The content of the CP Section#}
 {% block content %}
+    {% if plan is defined and plan.getErrors()|length %}
+        {% set errors = plan.getErrors() %}
+    {% endif %}
+
     {{ csrfInput() }}
-    {{ actionInput('mollie-subscriptions/plans/save') }}
+    {{ actionInput('mollie-subscriptions/plan/save') }}
     {{ redirectInput('mollie-subscriptions/plans') }}
     {% if form is defined and form.id is defined %}
-        <input type="hidden" name="data[id]" value="{{ form.id }}">
+        <input type="hidden" name="planId" value="{{ form.id }} ">
     {% endif %}
-    <div class="field" id="name-field">
-        <div class="heading">
-            <label id="name-label" class="required" for="title">{{ 'Title'|t('mollie-subscriptions') }}</label>
-            <div class="instructions"><p>{{ 'What this plan will be called in the CP.'|t('mollie-subscriptions') }}</p>
-            </div>
-        </div>
-        <div class="input ltr {% if errors is defined and errors.title is defined %}errors{% endif %}">
-            <input class="text fullwidth" type="text" id="title" name="data[title]"
-                   {% if form is defined %}value="{{ form.title }}"{% endif %} autofocus=""
-                   autocomplete="off" required="required">
-        </div>
-        {% if errors is defined and errors.title is defined %}
-            <ul class="errors">
-                {% for error in errors.title %}
-                    <li>{{ error }}</li>
-                {% endfor %}
-            </ul>
-        {% endif %}
-    </div>
-    <div class="field" id="handle-field">
-        <div class="heading">
-            <label id="handle-label" class="required" for="handle">{{ 'Handle'|t('mollie-subscriptions') }}</label>
-            <div class="instructions"><p>{{ 'How you’ll refer to this field in the templates.'|t('mollie-subscriptions') }}</p>
-            </div>
-        </div>
-        <div class="input ltr {% if errors is defined and errors.handle is defined %}errors{% endif %}">
-            <input class="text code fullwidth" type="text" id="handle" name="data[handle]"
-                   {% if form is defined %}value="{{ form.handle }}"{% endif %} maxlength="64"
-                   autocomplete="off" required="required">
-        </div>
-        {% if errors is defined and errors.handle is defined %}
-            <ul class="errors">
-                {% for error in errors.handle %}
-                    <li>{{ error }}</li>
-                {% endfor %}
-            </ul>
-        {% endif %}
-    </div>
+
+
+    {{ forms.textField({
+        label: 'Title'|t('mollie-subscriptions'),
+        instructions: 'What this plan will be called in the CP'|t('mollie-subscriptions'),
+        id: 'title',
+        required: true,
+        name: 'title',
+        value: plan is defined ? plan.title : '',
+        errors: errors is defined and errors.title is defined ? errors.title,
+    }) }}
+
+    {{ forms.textField({
+        label: 'Handle'|t('mollie-subscriptions'),
+        instructions: 'How you’ll refer to this field in the templates'|t('mollie-subscriptions'),
+        id: 'handle',
+        required: true,
+        name: 'handle',
+        value: plan is defined ? plan.handle : '',
+        errors: errors is defined and errors.handle is defined ? errors.handle
+    }) }}
 
     {% set availableCurrencies = { '': '---'} %}
     {% for id, currency in currencies %}
@@ -71,34 +58,51 @@
     {{ forms.selectField({
         label: "Currency"|t('mollie-subscriptions'),
         id: "currency",
-        name: "data[currency]",
         required: true,
+        name: "currency",
         options: availableCurrencies,
         value: form.currency ?? "",
         errors: errors is defined and errors.currency is defined ? errors.currency
     }) }}
 
-    <div class="field" id="handle-field">
-        <div class="heading">
-            <label id="handle-label" for="handle">{{ 'Payment description'|t('mollie-subscriptions') }}</label>
-            <div class="instructions"><p>{{ 'How these payments are called in Mollie. You can include tags that output entry properties, such as {myCustomField}. Defaults to "Order #payment.id".'|t('mollie-subscriptions') }}</p>
-            </div>
-        </div>
-        <div class="input ltr {% if errors is defined and errors.descriptionFormat is defined %}errors{% endif %}">
-            <input class="text code fullwidth" type="text" id="handle" name="data[descriptionFormat]"
-                   {% if form is defined %}value="{{ form.descriptionFormat }}"{% endif %}
-                   autocomplete="off">
-        </div>
-        {% if errors is defined and errors.descriptionFormat is defined %}
-            <ul class="errors">
-                {% for error in errors.descriptionFormat %}
-                    <li>{{ error }}</li>
-                {% endfor %}
-            </ul>
-        {% endif %}
-    </div>
+    {{ forms.textField({
+        label: 'Payment description'|t('mollie-subscriptions'),
+        instructions: 'A description unique per subscription. This will be included in the payment description.. You can include tags that output entry properties, such as {myCustomField}. Defaults to "Order #payment.id".'|t('mollie-subscriptions'),
+        id: 'description',
+        name: 'description',
+        value: plan is defined ? plan.description : '',
+        errors: errors is defined and errors.description is defined ? errors.description
+    }) }}
 
+    {{ forms.textField({
+        label: 'Numer of charges in the subscription plan'|t('mollie-subscriptions'),
+        instructions: 'Total number of charges for the subscription to complete. Leave empty for an ongoing subscription.'|t('mollie-subscriptions'),
+        id: 'times',
+        required: true,
+        name: 'times',
+        value: plan is defined ? plan.times : '',
+        errors: errors is defined and errors.times is defined ? errors.times
+    }) }}
 
+    <input type="hidden" name="intervalType" value="months">
+    {{ forms.selectField({
+        label: 'Subscription interval'|t('mollie-subscriptions'),
+        instructions: 'Interval to wait between charges.'|t('mollie-subscriptions'),
+        id: 'interval',
+        required: true,
+        name: 'interval',
+        options: [
+            { 'label': '---', 'value': '' },
+            { 'label': 'Every month', 'value': 1 },
+            { 'label': 'Every 2 months', 'value': 2 },
+            { 'label': 'Every 3 months', 'value': 3 },
+            { 'label': 'Every 4 months', 'value': 4 },
+            { 'label': 'Every 6 months', 'value': 6 },
+            { 'label': 'Every year', 'value': 12 }
+        ],
+        value: plan is defined ? plan.interval : '',
+        errors: errors is defined and errors.interval is defined ? errors.interval
+    }) }}
 
     {% if form is not defined or not form.handle|length %}
         {% js %}
@@ -111,7 +115,7 @@
         } only %}
     {% else %}
         {% include "_includes/fieldlayoutdesigner" with {
-            fieldLayout: craft.app.fields.getLayoutByType('ns\\prefix\\elements\\Product')
+            fieldLayout: craft.app.fields.getLayoutByType('studioespresso\\molliesubscriptions\\elements\\Subscription')
         } only %}
     {% endif %}
 
