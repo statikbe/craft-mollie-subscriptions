@@ -4,6 +4,7 @@ namespace studioespresso\molliesubscriptions\migrations;
 
 use Craft;
 use craft\db\Migration;
+use studioespresso\molliesubscriptions\records\SubscriberRecord;
 use studioespresso\molliesubscriptions\records\SubscriptionPlanRecord;
 
 /***
@@ -47,6 +48,22 @@ class Install extends Migration
         $tableSchema = Craft::$app->db->schema->getTableSchema(SubscriptionPlanRecord::tableName());
         if ($tableSchema === null) {
             $tablesCreated = true;
+
+            $this->createTable(
+                SubscriberRecord::tableName(),
+                [
+                    'id' => $this->string(30),
+                    'email' => $this->string()->notNull(),
+                    'name' => $this->string(),
+                    'locale' => $this->string(5),
+                    'metadata' => $this->text(),
+                    'links' => $this->text(),
+                    'dateCreated' => $this->dateTime()->notNull(),
+                    'dateUpdated' => $this->dateTime()->notNull(),
+                    'uid' => $this->uid(),
+                ]
+            );
+
             $this->createTable(
                 SubscriptionPlanRecord::tableName(),
                 [
@@ -77,5 +94,6 @@ class Install extends Migration
     protected function removeTables()
     {
         $this->dropTableIfExists(SubscriptionPlanRecord::tableName());
+        $this->dropTableIfExists(SubscriberRecord::tableName());
     }
 }
