@@ -10,6 +10,7 @@
 
 namespace studioespresso\molliesubscriptions;
 
+use studioespresso\molliesubscriptions\models\Settings;
 use studioespresso\molliesubscriptions\services\Currency;
 use studioespresso\molliesubscriptions\services\Mollie;
 use studioespresso\molliesubscriptions\services\Plans;
@@ -163,12 +164,30 @@ class MollieSubscriptions extends Plugin
                 'url' => 'mollie-subscriptions/plans',
             ];
         }
+        if (Craft::$app->getUser()->getIsAdmin() && Craft::$app->getConfig()->getGeneral()->allowAdminChanges) {
+            $subNavs['settings'] = [
+                'label' => 'Settings',
+                'url' => 'mollie-subscriptions/settings',
+            ];
+        }
         
         $navItem = array_merge($navItem, [
             'subnav' => $subNavs,
         ]);
 
         return $navItem;
+    }
+
+    public function getSettingsResponse()
+    {
+        return Craft::$app->getResponse()->redirect(UrlHelper::cpUrl('mollie-subscriptions/settings'));
+    }
+
+    // Protected Methods
+    // =========================================================================
+    protected function createSettingsModel()
+    {
+        return new Settings();
     }
 
 }

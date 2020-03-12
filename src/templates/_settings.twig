@@ -1,0 +1,31 @@
+{# @var craft \craft\web\twig\variables\CraftVariable #}
+
+{% extends "_layouts/cp" %}
+{% import "_includes/forms" as forms %}
+{% set title = form.title is defined ? form.title : 'Mollie Subscriptions settings' %}
+
+{% set selectedSubnavItem = 'settings' %}
+{% set fullPageForm = true %}
+
+{% set crumbs = [
+    { label: "Subscriptions", url: cpUrl('mollie-subscriptions') },
+    { label: 'Settings', url: '#' },
+] %}
+
+
+{# The content of the CP Section#}
+{% block content %}
+    {{ csrfInput() }}
+    {{ actionInput('mollie-subscriptions/settings/save') }}
+    {{ redirectInput('mollie-subscriptions/settings') }}
+
+    {{ forms.autosuggestField({
+        label: 'Mollie API key'|t('mollie-subscriptions'),
+        id: 'apiKey',
+        name: 'settings[apiKey]',
+        value: settings['apiKey'],
+        errors: settings.getErrors('apiKey'),
+        suggestEnvVars: true,
+        suggestAliases: true,
+    }) }}
+{% endblock %}
