@@ -13,6 +13,7 @@ namespace studioespresso\molliesubscriptions;
 use studioespresso\molliesubscriptions\services\Currency;
 use studioespresso\molliesubscriptions\services\Mollie;
 use studioespresso\molliesubscriptions\services\Plans;
+use studioespresso\molliesubscriptions\services\Subscriber;
 use studioespresso\molliesubscriptions\variables\MollieSubscriptionsVariable;
 use studioespresso\molliesubscriptions\elements\Subscription as SubscriptionElement;
 
@@ -44,6 +45,7 @@ use yii\base\Event;
  * @property Plans plans
  * @property Currency currency
  * @property Mollie mollie
+ * @property Subscriber subscriber
  *
  */
 class MollieSubscriptions extends Plugin
@@ -93,6 +95,7 @@ class MollieSubscriptions extends Plugin
             'mollie' => Mollie::class,
             'currency' => Currency::class,
             'plans' => Plans::class,
+            'subscriber' => Subscriber::class,
         ]);
 
         // Register our CP routes
