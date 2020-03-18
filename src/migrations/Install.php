@@ -5,7 +5,9 @@ namespace studioespresso\molliesubscriptions\migrations;
 use Craft;
 use craft\db\Migration;
 use studioespresso\molliesubscriptions\records\SubscriberRecord;
+use studioespresso\molliesubscriptions\records\SubscriptionPaymentRecord;
 use studioespresso\molliesubscriptions\records\SubscriptionPlanRecord;
+use studioespresso\molliesubscriptions\records\SubscriptionRecord;
 
 /***
  * @author    Studio Espresso
@@ -50,6 +52,22 @@ class Install extends Migration
             $tablesCreated = true;
 
             $this->createTable(
+                SubscriptionRecord::tableName(),
+                [
+                    'id' => $this->integer()->notNull(),
+                    'email' => $this->string()->notNull(),
+                    'subscriptionStatus' => $this->string()->notNull(),
+                    'amount' => $this->decimal("10,2")->notNull(),
+                    'planId' => $this->integer()->notNull(),
+                    'dateCreated' => $this->dateTime()->notNull(),
+                    'dateUpdated' => $this->dateTime()->notNull(),
+                    'uid' => $this->uid(),
+                    'PRIMARY KEY(id)',
+                ]
+            );
+
+
+            $this->createTable(
                 SubscriberRecord::tableName(),
                 [
                     'id' => $this->string(30),
@@ -82,6 +100,22 @@ class Install extends Migration
                     'uid' => $this->uid(),
                 ]
             );
+
+            $this->createTable(SubscriptionPaymentRecord::tableName(), [
+                'id' => $this->string()->notNull(),
+                'payment' => $this->integer()->notNull(),
+                'amount' => $this->decimal("10,2")->notNull(),
+                'currency' => $this->string(3)->defaultValue('EUR'),
+                'status' => $this->string()->notNull(),
+                'method' => $this->string(),
+                'paidAt' => $this->dateTime(),
+                'canceledAt' => $this->dateTime(),
+                'expiresAt' => $this->dateTime(),
+                'failedAt' => $this->dateTime(),
+                'dateCreated' => $this->dateTime()->notNull(),
+                'dateUpdated' => $this->dateTime()->notNull(),
+                'uid' => $this->uid(),
+            ]);
         }
         return $tablesCreated;
     }
@@ -94,6 +128,8 @@ class Install extends Migration
     protected function removeTables()
     {
         $this->dropTableIfExists(SubscriptionPlanRecord::tableName());
+        $this->dropTableIfExists(SubscriptionPaymentRecord::tableName());
+        $this->dropTableIfExists(SubscriptionRecord::tableName());
         $this->dropTableIfExists(SubscriberRecord::tableName());
     }
 }

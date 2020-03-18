@@ -39,8 +39,10 @@ class Plans extends Component
 
     public function getPlanById($id)
     {
-        $plans = SubscriptionPlanRecord::findOne(['id' => $id]);
-        return $plans;
+        $plan = SubscriptionPlanRecord::findOne(['id' => $id]);
+        $model = new SubscriptionPlanModel();
+        $model->setAttributes($plan->getAttributes(), false);
+        return $model;
     }
 
     public function getAllPlans()

@@ -39,7 +39,7 @@ use yii\web\UnauthorizedHttpException;
  */
 class SubscriptionsController extends Controller
 {
-    protected $allowAnonymous = ['subscrube'];
+    protected $allowAnonymous = ['subscribe', 'process'];
 
     // Public Methods// =========================================================================
     public function actionIndex()
@@ -53,13 +53,18 @@ class SubscriptionsController extends Controller
         if (!$plan) {
             throw new UnauthorizedHttpException('Plan not found');
         }
-        $plan = MollieSubscriptions::$plugin->plans->getPlanById(Craft::$app->getRequest()->getValidatedBodyParam('plan'));
-
+        $redirect = Craft::$app->getRequest()->getValidatedBodyParam('redirect');
+        $subscription = MollieSubscriptions::$plugin->plans->getPlanById(Craft::$app->getRequest()->getValidatedBodyParam('plan'));
         $email = Craft::$app->getRequest()->getRequiredBodyParam('email');
-        $subscriber  = MollieSubscriptions::$plugin->subscriber->getOrCreateSubscriberByEmail($email);
-        dd($subscriber);
+        $subscriber = MollieSubscriptions::$plugin->subscriber->getOrCreateSubscriberByEmail($email);
+        $result = MollieSubscriptions::$plugin->mollie->createFirstPayment($subscriber, $subscription, $redirect);
+        dd($result);
+    }
 
-
+    public function actionProcess()
+    {
+        d(Craft::$app->getRequest()->getBodyParams());
+        dd(Craft::$app->getRequest()->getQueryParams());
     }
 
 }
