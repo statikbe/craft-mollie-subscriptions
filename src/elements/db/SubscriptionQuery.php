@@ -56,13 +56,13 @@ class SubscriptionQuery extends ElementQuery
 
     protected function beforePrepare(): bool
     {
-        $this->joinElementTable('{{%mollie_subscriptions}}');
+        $this->joinElementTable('mollie_subscriptions');
         // select the columns
         $this->query->select([
             'mollie_subscriptions.email',
             'mollie_subscriptions.amount',
             'mollie_subscriptions.plan',
-            'mollie_subscriptions.paymentStatus',
+            'mollie_subscriptions.subscriptionStatus',
         ]);
 
         if ($this->email) {

@@ -51,6 +51,8 @@ class SubscriptionPlanModel extends Model
 
     public $fieldLayout;
 
+    public $uid;
+
     public function rules()
     {
         return [
