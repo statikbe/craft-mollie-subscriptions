@@ -119,6 +119,14 @@ class MollieSubscriptions extends Plugin
             }
         );
 
+        Event::on(
+            UrlManager::class,
+            UrlManager::EVENT_REGISTER_SITE_URL_RULES,
+            function (RegisterUrlRulesEvent $event) {
+                $event->rules['mollie-subscriptions/subscriptions/process'] = 'mollie-subscriptions/subscriptions/process';
+            }
+        );
+
         // Register our elements
         Event::on(
             Elements::class,

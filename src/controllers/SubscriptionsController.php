@@ -11,6 +11,7 @@
 namespace studioespresso\molliesubscriptions\controllers;
 
 use craft\commerce\models\Customer;
+use studioespresso\molliesubscriptions\elements\Subscription;
 use studioespresso\molliesubscriptions\MollieSubscriptions;
 
 use Craft;
@@ -39,8 +40,20 @@ use yii\web\UnauthorizedHttpException;
  */
 class SubscriptionsController extends Controller
 {
-    protected $allowAnonymous = ['subscribe', 'process'];
+    protected $allowAnonymous = ['subscribe', 'process', 'webhook'];
 
+
+    public function beforeAction($action)
+    {
+        if ($action->id === 'webhook') {
+            $this->enableCsrfValidation = false;
+        }
+
+        if (!MollieSubscriptions::$plugin->getSettings()->apiKey) {
+            throw new InvalidConfigException("No Mollie API key set");
+        }
+        return parent::beforeAction($action);
+    }
     // Public Methods// =========================================================================
     public function actionIndex()
     {
@@ -50,15 +63,30 @@ class SubscriptionsController extends Controller
     public function actionSubscribe()
     {
         $plan = Craft::$app->getRequest()->getValidatedBodyParam('plan');
+        $email = Craft::$app->getRequest()->getRequiredBodyParam('email');
         if (!$plan) {
             throw new UnauthorizedHttpException('Plan not found');
         }
+        $plan = MollieSubscriptions::$plugin->plans->getPlanById(Craft::$app->getRequest()->getValidatedBodyParam('plan'));
+
+        $subscription = new Subscription();
+        $subscription->email = $email;
+        $subscription->plan = $plan->id;
+        $subscription->amount = $plan->amount;
+        $subscription->subscriptionStatus = 'pending';
+        $subscription->setFieldValuesFromRequest('fields');
+
+        if(!$subscription->validate()) {
+            // return with errors here?
+        }
+
+        Craft::$app->getElements()->saveElement($subscription);
+
         $redirect = Craft::$app->getRequest()->getValidatedBodyParam('redirect');
-        $subscription = MollieSubscriptions::$plugin->plans->getPlanById(Craft::$app->getRequest()->getValidatedBodyParam('plan'));
         $email = Craft::$app->getRequest()->getRequiredBodyParam('email');
         $subscriber = MollieSubscriptions::$plugin->subscriber->getOrCreateSubscriberByEmail($email);
-        $result = MollieSubscriptions::$plugin->mollie->createFirstPayment($subscriber, $subscription, $redirect);
-        dd($result);
+        $url = MollieSubscriptions::$plugin->mollie->createFirstPayment($subscription, $subscriber, $plan, $redirect);
+        return $this->redirect($url);
     }
 
     public function actionProcess()

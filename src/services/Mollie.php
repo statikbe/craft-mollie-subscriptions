@@ -12,6 +12,7 @@ use studioespresso\molliepayments\models\PaymentFormModel;
 use studioespresso\molliepayments\models\PaymentTransactionModel;
 use studioespresso\molliepayments\MolliePayments;
 use studioespresso\molliepayments\records\PaymentFormRecord;
+use studioespresso\molliesubscriptions\elements\Subscription;
 use studioespresso\molliesubscriptions\models\SubscriberModel;
 use studioespresso\molliesubscriptions\models\SubscriptionPlanModel;
 use studioespresso\molliesubscriptions\MollieSubscriptions;
@@ -31,24 +32,25 @@ class Mollie extends Component
 
     }
 
-    public function createFirstPayment(SubscriberModel $subscriber, SubscriptionPlanModel $subscription, $redirect)
+    public function createFirstPayment(Subscription $subscription, SubscriberModel $subscriber, SubscriptionPlanModel $plan, $redirect)
     {
         $response = $this->mollie->payments->create([
             "amount" => [
-                "value" => $subscription->amount,
-                "currency" => $subscription->currency
+                "value" => $plan->amount,
+                "currency" => $plan->currency
             ],
             "customerId" => $subscriber->id,
             "sequenceType" => "first",
-            "description" => $subscription->description,
+            "description" => $plan->description,
             "redirectUrl" => UrlHelper::url("{$this->baseUrl}mollie-subscriptions/subscriptions/process", [
-                "paymentId" => $subscription->uid,
+                "planUid" => $plan->uid,
+                "subscriptionUid" => $subscription->uid,
                 "redirect" => $redirect
             ]),
             "webhookUrl" => "{$this->baseUrl}mollie-subscriptions/subscriptions/webhook",
             "metadata" => [
                 "redirectUrl" => $redirect,
-                "plan" => $subscription->id,
+                "plan" => $plan->id,
                 "customer" => $subscriber->id,
             ],
         ]);
@@ -58,22 +60,22 @@ class Mollie extends Component
     }
 
 
-    public function createSubscription(SubscriberModel $subscriber, SubscriptionPlanModel $subscription)
+    public function createSubscription(SubscriberModel $subscriber, SubscriptionPlanModel $plan)
     {
         /** @var Customer $customer */
         $customer = $this->mollie->customers->get($subscriber->id);
         $data = [
             "amount" => [
-                "value" => $subscription->amount,
-                "currency" => $subscription->currency
+                "value" => $plan->amount,
+                "currency" => $plan->currency
             ],
-            "interval" => $subscription->interval . ' ' . $subscription->intervalType,
-            "description" => $subscription->description,
+            "interval" => $plan->interval . ' ' . $plan->intervalType,
+            "description" => $plan->description,
             "webhookUrl" => "{$this->baseUrl}mollie-subscriptions/subscriptions/webhook"
         ];
 
-        if ($subscription->times) {
-            $data["times"] = $subscription->times;
+        if ($plan->times) {
+            $data["times"] = $plan->times;
         }
 
         $response = $customer->createSubscription($data);
