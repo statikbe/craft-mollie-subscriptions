@@ -95,4 +95,9 @@ class Mollie extends Component
         return $customer;
     }
 
+    public function getPayment($orderId)
+    {
+        return $this->mollie->payments->get($orderId);
+    }
+
 }

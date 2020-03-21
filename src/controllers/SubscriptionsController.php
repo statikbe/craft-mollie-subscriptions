@@ -11,6 +11,7 @@
 namespace studioespresso\molliesubscriptions\controllers;
 
 use craft\commerce\models\Customer;
+use craft\helpers\UrlHelper;
 use studioespresso\molliesubscriptions\elements\Subscription;
 use studioespresso\molliesubscriptions\MollieSubscriptions;
 
@@ -41,7 +42,6 @@ use yii\web\UnauthorizedHttpException;
 class SubscriptionsController extends Controller
 {
     protected $allowAnonymous = ['subscribe', 'process', 'webhook'];
-
 
     public function beforeAction($action)
     {
@@ -92,7 +92,19 @@ class SubscriptionsController extends Controller
 
     public function actionProcess()
     {
-        // check payment status & redirect to redirect input url
+        $request = Craft::$app->getRequest();
+        $uid = $request->getQueryParam('subscriptionUid');
+        $redirect = $request->getQueryParam('redirect');
+        $subscriptionElement = Subscription::findOne(['uid' => $uid]);
+
+        $transaction = MollieSubscriptions::$plugin->payments->getPaymentBySubscriptionId($subscriptionElement->id);
+
+        try {
+            $molliePayment = MollieSubscriptions::$plugin->mollie->getPayment($transaction->id);
+            $this->redirect(UrlHelper::url($redirect, ['subscription' => $uid, 'status' => $molliePayment->status]));
+        } catch (\Exception $e) {
+            throw new NotFoundHttpException('Payments not found', '404');
+        }
     }
 
     public function actionWebhook()
