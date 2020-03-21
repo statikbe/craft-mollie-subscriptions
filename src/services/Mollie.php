@@ -5,18 +5,12 @@ namespace studioespresso\molliesubscriptions\services;
 use Craft;
 use craft\base\Component;
 use craft\helpers\UrlHelper;
-use Mollie\Api\MollieApiClient;
 use Mollie\Api\Resources\Customer;
-use studioespresso\molliepayments\elements\Payment;
-use studioespresso\molliepayments\models\PaymentFormModel;
-use studioespresso\molliepayments\models\PaymentTransactionModel;
-use studioespresso\molliepayments\MolliePayments;
-use studioespresso\molliepayments\records\PaymentFormRecord;
 use studioespresso\molliesubscriptions\elements\Subscription;
 use studioespresso\molliesubscriptions\models\SubscriberModel;
+use studioespresso\molliesubscriptions\models\SubscriptionPaymentModel;
 use studioespresso\molliesubscriptions\models\SubscriptionPlanModel;
 use studioespresso\molliesubscriptions\MollieSubscriptions;
-use studioespresso\molliesubscriptions\records\SubscriptionPlanRecord;
 
 class Mollie extends Component
 {
@@ -54,6 +48,15 @@ class Mollie extends Component
                 "customer" => $subscriber->id,
             ],
         ]);
+
+        $payment = new SubscriptionPaymentModel();
+        $payment->id = $response->id;
+        $payment->subscription = $subscription->id;
+        $payment->currency = $plan->currency;
+        $payment->amount = $subscription->amount;
+        $payment->status = $response->status;
+
+        MollieSubscriptions::$plugin->payments->save($payment);
 
 
         return $response->_links->checkout->href;

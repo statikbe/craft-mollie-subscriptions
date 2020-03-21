@@ -54,6 +54,7 @@ class SubscriptionsController extends Controller
         }
         return parent::beforeAction($action);
     }
+
     // Public Methods// =========================================================================
     public function actionIndex()
     {
@@ -76,7 +77,7 @@ class SubscriptionsController extends Controller
         $subscription->subscriptionStatus = 'pending';
         $subscription->setFieldValuesFromRequest('fields');
 
-        if(!$subscription->validate()) {
+        if (!$subscription->validate()) {
             // return with errors here?
         }
 
@@ -91,8 +92,12 @@ class SubscriptionsController extends Controller
 
     public function actionProcess()
     {
-        d(Craft::$app->getRequest()->getBodyParams());
-        dd(Craft::$app->getRequest()->getQueryParams());
+        // check payment status & redirect to redirect input url
+    }
+
+    public function actionWebhook()
+    {
+        
     }
 
 }

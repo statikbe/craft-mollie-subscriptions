@@ -32,7 +32,7 @@ class SubscriptionPaymentModel extends Model
 {
     public $id;
 
-    public $payment;
+    public $subscription;
 
     public $status;
 
