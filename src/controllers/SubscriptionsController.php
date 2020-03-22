@@ -58,6 +58,7 @@ class SubscriptionsController extends Controller
     // Public Methods// =========================================================================
     public function actionIndex()
     {
+
         return $this->renderTemplate('mollie-subscriptions/_elements/_index.twig');
     }
 
@@ -74,7 +75,7 @@ class SubscriptionsController extends Controller
         $subscription->email = $email;
         $subscription->plan = $plan->id;
         $subscription->amount = $plan->amount;
-        $subscription->subscriptionStatus = 'pending';
+        $subscription->subscriptionStatus = 'Pending first payment';
         $subscription->setFieldValuesFromRequest('fields');
 
         if (!$subscription->validate()) {

@@ -94,11 +94,28 @@ class Subscription extends Element
      * @return array The sources.
      * @see sources()
      */
+    /**
+     * @inheritdoc
+     */
     protected static function defineSources(string $context = null): array
     {
-        $sources = [];
-
+        $sources[] = [
+            'key' => '*',
+            'label' => 'All subscriptions',
+            'criteria' => ['id' => '*'],
+        ];
+        
         return $sources;
+    }
+
+    protected static function defineTableAttributes(): array
+    {
+        return [
+            'email' => Craft::t('mollie-subscriptions', 'Email'),
+            'amount' => Craft::t('mollie-subscriptions', 'Amount'),
+            'status' => Craft::t('mollie-subscriptions', 'Status'),
+            'dateCreated' => Craft::t('mollie-subscriptions', 'Date Created'),
+        ];
     }
 
     // Public Methods
@@ -122,6 +139,11 @@ class Subscription extends Element
     public function getIsEditable(): bool
     {
         return false;
+    }
+
+    public function getStatus()
+    {
+        return $this->subscriptionStatus;
     }
 
 
