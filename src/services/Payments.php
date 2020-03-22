@@ -30,4 +30,10 @@ class Payments extends Component
         $paymentRecord = SubscriptionPaymentRecord::findOne(['subscription' => $id]);
         return $paymentRecord;
     }
+
+    public function getPaymentById($id)
+    {
+        $paymentRecord = SubscriptionPaymentRecord::findOne(['id' => $id]);
+        return $paymentRecord;
+    }
 }

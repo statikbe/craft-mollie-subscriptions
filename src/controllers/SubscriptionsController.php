@@ -110,7 +110,11 @@ class SubscriptionsController extends Controller
 
     public function actionWebhook()
     {
-        
+        $id = Craft::$app->getRequest()->getRequiredParam('id');
+        $payment = MollieSubscriptions::getInstance()->payments->getPaymentById($id);
+        $molliePayment = MollieSubscriptions::getInstance()->mollie->getPayment($id);
+        MolliePayments::getInstance()->payment->updatePayment($payment, $molliePayment);
+        return;
     }
 
 }

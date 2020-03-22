@@ -104,7 +104,17 @@ class Subscription extends Element
             'label' => 'All subscriptions',
             'criteria' => ['id' => '*'],
         ];
-        
+
+        $plans = MollieSubscriptions::$plugin->plans->getAllPlans();
+        foreach($plans as $plan) {
+
+            $sources[] = [
+                'key' => $plan->uid,
+                'label' => $plan->title,
+                'criteria' => ['plan' => $plan->id]
+            ];
+        }
+
         return $sources;
     }
 
