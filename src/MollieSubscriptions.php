@@ -110,6 +110,7 @@ class MollieSubscriptions extends Plugin
             UrlManager::EVENT_REGISTER_CP_URL_RULES,
             function (RegisterUrlRulesEvent $event) {
                 $event->rules['mollie-subscriptions'] = 'mollie-subscriptions/default/index';
+                $event->rules['mollie-subscriptions/subscribers'] = 'mollie-subscriptions/subscribers/index';
                 $event->rules['mollie-subscriptions/edit/<uid:{uid}>'] = 'mollie-subscriptions/payment/edit';
                 $event->rules['mollie-subscriptions/edit/<uid:{uid}>'] = 'mollie-subscriptions/payment/edit';
                 $event->rules['mollie-subscriptions/plans'] = 'mollie-subscriptions/plan/index';
@@ -170,8 +171,13 @@ class MollieSubscriptions extends Plugin
             'label' => 'Subscriptions',
             'url' => 'mollie-subscriptions',
         ];
-        
-        
+
+        if (Craft::$app->getUser()->getIsAdmin() && Craft::$app->getConfig()->getGeneral()->allowAdminChanges) {
+            $subNavs['subscribers'] = [
+                'label' => 'Subscribers',
+                'url' => 'mollie-subscriptions/subscribers',
+            ];
+        }
         if (Craft::$app->getUser()->getIsAdmin() && Craft::$app->getConfig()->getGeneral()->allowAdminChanges) {
             $subNavs['plans'] = [
                 'label' => 'Plans',

@@ -1,0 +1,25 @@
+{# @var craft \craft\web\twig\variables\CraftVariable #}
+{#
+/**
+ * Mollie Subscriptions plugin for Craft CMS 3.x
+ *
+ * Mollie Subscriptions index.twig
+ *
+ * @author    Studio Espresso
+ * @copyright Copyright (c) 2020 Studio Espresso
+ * @link      https://studioespresso.co
+ * @package   MollieSubscriptions
+ * @since     1.0.0
+ */
+#}
+
+{% set crumbs = [
+    { label: "Subscriptions", url: cpUrl('mollie-subscriptions') },
+] %}
+
+{% set selectedSubnavItem = 'subscribers' %}
+
+
+{% extends '_layouts/elementindex' %}
+{% set title = 'Subscribers' %}
+{% set elementType = 'studioespresso\\molliesubscriptions\\elements\\Subscriber' %}
