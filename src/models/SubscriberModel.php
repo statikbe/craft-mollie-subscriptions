@@ -36,6 +36,8 @@ class SubscriberModel extends Model
 
     public $email;
 
+    public $userId;
+
     public $locale;
 
     public $metadata;

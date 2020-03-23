@@ -124,6 +124,7 @@ class MollieSubscriptions extends Plugin
             UrlManager::EVENT_REGISTER_SITE_URL_RULES,
             function (RegisterUrlRulesEvent $event) {
                 $event->rules['mollie-subscriptions/subscriptions/process'] = 'mollie-subscriptions/subscriptions/process';
+                $event->rules['mollie-subscriptions/subscriptions/webhook'] = 'mollie-subscriptions/subscriptions/webhook';
             }
         );
 

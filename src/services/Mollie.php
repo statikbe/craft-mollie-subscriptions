@@ -5,6 +5,7 @@ namespace studioespresso\molliesubscriptions\services;
 use Craft;
 use craft\base\Component;
 use craft\helpers\UrlHelper;
+use Mollie\Api\MollieApiClient;
 use Mollie\Api\Resources\Customer;
 use studioespresso\molliesubscriptions\elements\Subscription;
 use studioespresso\molliesubscriptions\models\SubscriberModel;
@@ -20,7 +21,7 @@ class Mollie extends Component
 
     public function init()
     {
-        $this->mollie = new \Mollie\Api\MollieApiClient();
+        $this->mollie = new MollieApiClient();
         $this->mollie->setApiKey(Craft::parseEnv(MollieSubscriptions::$plugin->getSettings()->apiKey));
         $this->baseUrl = Craft::$app->getSites()->getCurrentSite()->getBaseUrl();
 
@@ -63,10 +64,11 @@ class Mollie extends Component
     }
 
 
-    public function createSubscription(SubscriberModel $subscriber, SubscriptionPlanModel $plan)
+    public function createSubscription(Subscription $subscription)
     {
         /** @var Customer $customer */
-        $customer = $this->mollie->customers->get($subscriber->id);
+        $plan = MollieSubscriptions::$plugin->plans->getPlanById($subscription->plan);
+        $customer = $this->getCustomer($subscription->subscriber);
         $data = [
             "amount" => [
                 "value" => $plan->amount,
@@ -93,6 +95,11 @@ class Mollie extends Component
             "email" => $email,
         ]);
         return $customer;
+    }
+
+    public function getCustomer($id)
+    {
+        return $this->mollie->customers->get($id);
     }
 
     public function getPayment($orderId)

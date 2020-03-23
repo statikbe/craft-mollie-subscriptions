@@ -63,6 +63,7 @@ class SubscriptionQuery extends ElementQuery
             'mollie_subscriptions.amount',
             'mollie_subscriptions.plan',
             'mollie_subscriptions.subscriptionStatus',
+            'mollie_subscriptions.subscriber',
         ]);
 
         if ($this->email) {

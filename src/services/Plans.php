@@ -8,6 +8,7 @@ use studioespresso\molliepayments\records\PaymentFormRecord;
 use studioespresso\molliepayments\elements\Payment as PaymentElement;
 use studioespresso\molliesubscriptions\models\SubscriptionPlanModel;
 use studioespresso\molliesubscriptions\records\SubscriptionPlanRecord;
+use yii\web\NotFoundHttpException;
 
 class Plans extends Component
 {
@@ -40,6 +41,9 @@ class Plans extends Component
     public function getPlanById($id)
     {
         $plan = SubscriptionPlanRecord::findOne(['id' => $id]);
+        if(!$plan) {
+            throw new NotFoundHttpException("Subscription plan not found", 404);
+        }
         $model = new SubscriptionPlanModel();
         $model->setAttributes($plan->getAttributes(), false);
         return $model;

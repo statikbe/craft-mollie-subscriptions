@@ -70,9 +70,13 @@ class SubscriptionsController extends Controller
             throw new UnauthorizedHttpException('Plan not found');
         }
         $plan = MollieSubscriptions::$plugin->plans->getPlanById(Craft::$app->getRequest()->getValidatedBodyParam('plan'));
+        $email = Craft::$app->getRequest()->getRequiredBodyParam('email');
+        $subscriber = MollieSubscriptions::$plugin->subscriber->getOrCreateSubscriberByEmail($email);
+
 
         $subscription = new Subscription();
         $subscription->email = $email;
+        $subscription->subscriber = $subscriber->id;
         $subscription->plan = $plan->id;
         $subscription->amount = $plan->amount;
         $subscription->subscriptionStatus = 'Pending first payment';
@@ -85,8 +89,6 @@ class SubscriptionsController extends Controller
         Craft::$app->getElements()->saveElement($subscription);
 
         $redirect = Craft::$app->getRequest()->getValidatedBodyParam('redirect');
-        $email = Craft::$app->getRequest()->getRequiredBodyParam('email');
-        $subscriber = MollieSubscriptions::$plugin->subscriber->getOrCreateSubscriberByEmail($email);
         $url = MollieSubscriptions::$plugin->mollie->createFirstPayment($subscription, $subscriber, $plan, $redirect);
         return $this->redirect($url);
     }
@@ -110,10 +112,14 @@ class SubscriptionsController extends Controller
 
     public function actionWebhook()
     {
+        $this->requirePostRequest();
         $id = Craft::$app->getRequest()->getRequiredParam('id');
         $payment = MollieSubscriptions::getInstance()->payments->getPaymentById($id);
         $molliePayment = MollieSubscriptions::getInstance()->mollie->getPayment($id);
-        MolliePayments::getInstance()->payment->updatePayment($payment, $molliePayment);
+        $paymentElement = MollieSubscriptions::getInstance()->payments->updatePayment($payment, $molliePayment);
+        if($paymentElement) {
+            MollieSubscriptions::$plugin->mollie->createSubscription($paymentElement);
+        }
         return;
     }
 

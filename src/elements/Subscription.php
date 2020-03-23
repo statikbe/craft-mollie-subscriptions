@@ -40,6 +40,8 @@ class Subscription extends Element
 
     public $amount;
 
+    public $subscriber;
+
     public $plan;
 
     public $subscriptionStatus;
@@ -211,6 +213,7 @@ class Subscription extends Element
                 ->insert(SubscriptionRecord::tableName(), [
                     'id' => $this->id,
                     'email' => $this->email,
+                    'subscriber' => $this->subscriber,
                     'subscriptionStatus' => $this->subscriptionStatus,
                     'amount' => $this->amount,
                     'plan' => $this->plan,
