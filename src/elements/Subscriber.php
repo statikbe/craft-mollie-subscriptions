@@ -10,6 +10,7 @@
 
 namespace studioespresso\molliesubscriptions\elements;
 
+use studioespresso\molliesubscriptions\elements\db\SubscriberQuery;
 use studioespresso\molliesubscriptions\elements\db\SubscriptionQuery;
 use studioespresso\molliesubscriptions\MollieSubscriptions;
 
@@ -37,9 +38,20 @@ class Subscriber extends Element
      *
      * @var string
      */
+
+    public $name;
+
     public $email;
 
     public $customerId;
+
+    public $userId;
+
+    public $locale;
+
+    public $metadata;
+
+    public $links;
 
     // Static Methods
     // =========================================================================
@@ -82,7 +94,7 @@ class Subscriber extends Element
      */
     public static function find(): ElementQueryInterface
     {
-        return new SubscriptionQuery(static::class);
+        return new SubscriberQuery(static::class);
     }
 
     /**
@@ -165,8 +177,13 @@ class Subscriber extends Element
             \Craft::$app->db->createCommand()
                 ->insert(SubscriberRecord::tableName(), [
                     'id' => $this->id,
+                    'name' => $this->name,
                     'email' => $this->email,
                     'customerId' => $this->customerId,
+                    'userId' => $this->userId,
+                    'locale' => $this->locale,
+                    'metadata' => $this->metadata,
+                    'links' => $this->metadata
                 ])
                 ->execute();
         } else {

@@ -10,21 +10,11 @@ class SubscriberQuery extends ElementQuery
 
     public $email;
 
-    public $customerId;
-
-
     public function email($value)
     {
         $this->email = $value;
         return $this;
     }
-
-    public function customerId($value)
-    {
-        $this->customerId = $value;
-        return $this;
-    }
-
 
     protected function beforePrepare(): bool
     {
@@ -37,10 +27,6 @@ class SubscriberQuery extends ElementQuery
 
         if ($this->email) {
             $this->subQuery->andWhere(Db::parseParam('mollie_subscribers.email', $this->email));
-        }
-
-        if ($this->plan) {
-            $this->subQuery->andWhere(Db::parseParam('mollie_subscribers.customerId', $this->customerId));
         }
 
         return parent::beforePrepare();

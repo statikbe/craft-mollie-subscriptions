@@ -56,7 +56,7 @@ class Install extends Migration
                 [
                     'id' => $this->integer()->notNull(),
                     'email' => $this->string()->notNull(),
-                    'subscriber' => $this->string(30),
+                    'subscriber' => $this->integer(),
                     'subscriptionStatus' => $this->string()->notNull(),
                     'amount' => $this->decimal("10,2")->notNull(),
                     'plan' => $this->integer()->notNull(),
@@ -67,13 +67,13 @@ class Install extends Migration
                 ]
             );
 
-
             $this->createTable(
                 SubscriberRecord::tableName(),
                 [
                     'id' => $this->string(30),
                     'name' => $this->string(),
                     'email' => $this->string()->notNull(),
+                    'customerId' => $this->string(30),
                     'userId' => $this->integer(),
                     'locale' => $this->string(5),
                     'metadata' => $this->text(),
@@ -81,6 +81,8 @@ class Install extends Migration
                     'dateCreated' => $this->dateTime()->notNull(),
                     'dateUpdated' => $this->dateTime()->notNull(),
                     'uid' => $this->uid(),
+                    'PRIMARY KEY(id)',
+
                 ]
             );
 
