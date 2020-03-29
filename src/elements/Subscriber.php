@@ -106,22 +106,27 @@ class Subscriber extends Element
     /**
      * @inheritdoc
      */
-//    protected static function defineSources(string $context = null): array
-//    {
-//        $sources[] = [
-//            'key' => '*',
-//            'label' => 'All s',
-//            'criteria' => ['id' => '*'],
-//        ];
-//
-//        return $sources;
-//    }
+    protected static function defineSources(string $context = null): array
+    {
+        $sources[] = [
+            'key' => '*',
+            'label' => 'All',
+            'criteria' => ['id' => '*'],
+        ];
+
+        return $sources;
+    }
+
+    public function getUiLabel(): string
+    {
+        return $this->email;
+    }
 
     protected static function defineTableAttributes(): array
     {
         return [
             'email' => Craft::t('mollie-subscriptions', 'Email'),
-            'dateCreated' => Craft::t('mollie-subscriptions', 'Date Created'),
+            'customerId' => Craft::t('mollie-subscriptions', 'Customer ID'),
         ];
     }
 
