@@ -90,6 +90,21 @@ class Subscription extends Element
         return new SubscriptionQuery(static::class);
     }
 
+
+    /**
+     * @return string
+     */
+    public function getUiLabel(): string
+    {
+        $plan = $this->getPlan();
+        return "{$plan->title} - {$this->email}";
+    }
+
+    public function getPlan() {
+        return MollieSubscriptions::$plugin->plans->getPlanById($this->plan);
+    }
+
+
     /**
      * @param string|null $context The context ('index' or 'modal').
      *
