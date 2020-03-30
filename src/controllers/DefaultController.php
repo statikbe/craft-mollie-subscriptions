@@ -55,11 +55,13 @@ class DefaultController extends Controller
     public function actionEdit($uid)
     {
         $subscription = Subscription::findOne(['uid' => $uid]);
+        $payments = MollieSubscriptions::$plugin->payments->getAllPaymentsForSubscription($subscription->id);
         $plan = MollieSubscriptions::$plugin->plans->getPlanById($subscription->plan);
         $this->renderTemplate('mollie-subscriptions/_elements/_subscriptions/_edit', [
             'element' => $subscription,
-            'plan' => $plan]
-        );
+            'payments' => $payments,
+            'plan' => $plan
+        ]);
     }
 
 }

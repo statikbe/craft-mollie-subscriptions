@@ -1,0 +1,46 @@
+{% macro transactionRow(transaction, level) %}
+
+    {% set colors = {
+        pending: 'orange',
+        paid: 'green',
+        free: 'green',
+        expired: 'red'
+    } %}
+    <tr class="infoRow" >
+        <td data-id="{{ 'Status'|t('mollie-payments') }}">
+            <span class="status {{ attribute(colors, transaction.status) is defined ? attribute(colors, transaction.status) : '' }}"></span> {{ transaction.status|title }}
+        </td>
+        <td data-id="{{ 'Id'|t('mollie-payments') }}">
+            {{ transaction.id }} {% if transaction.status != 'free' %}<a href="https://www.mollie.com/dashboard/payments/{{ transaction.id }}" rel="noopener" target="_blank" data-icon="world" title="View on mollie"></a>{% endif %}
+        </td>
+        <td data-title="{{ 'Amount'|t('mollie-payments') }}">{{ transaction.amount|currency(transaction.currency) }}
+            <small class="light">({{ transaction.currency }})</small>
+        </td>
+        <td data-title="{{ 'Date'|t('mollie-payments') }}">{{ transaction.dateUpdated|date('H:i:s (jS M Y)') }}</td>
+        <td data-method="{{ 'Method'|t('mollie-payments') }}">{{ transaction.method ?? '' }}</td>
+    </tr>
+
+{% endmacro %}
+
+{% if payments|length %}
+    {% from _self import transactionRow %}
+    <table class="data fullwidth collapsible">
+        <thead>
+        <tr>
+            <th scope="col">{{ 'Status'|t('mollie-payments') }}</th>
+            <th scope="col">{{ 'ID'|t('mollie-payments') }}</th>
+            <th scope="col">{{ 'Amount'|t('mollie-payments') }}</th>
+            <th scope="col">{{ 'Payments Amount'|t('mollie-payments') }}</th>
+            <th scope="col">{{ 'Payments method'|t('mollie-payments') }}</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for payment in payments %}
+            {{ transactionRow(payment, 0) }}
+        {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p class="light">{{ 'No payments.'|t('mollie-payments') }}</p>
+{% endif %}

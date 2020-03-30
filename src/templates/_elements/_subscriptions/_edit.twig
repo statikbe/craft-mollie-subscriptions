@@ -19,7 +19,7 @@
     {% set data = { label: tab.name, url: '#' ~ tab.getHtmlId()} %}
     {% set tabData = tabData|merge({ (tab.id) : data}) %}
 {% endfor %}
-{% set tabData = tabData|merge( {translactions: { label: "Transactions", url : "#tab-transactions"} }) %}
+{% set tabData = tabData|merge( {translactions: { label: "Payments", url : "#tab-payments"} }) %}
 
 {% set tabs = tabData %}
 
@@ -33,9 +33,9 @@
             } only %}
         </div>
     {% endfor %}
-{#    <div id="tab-transactions" class="{% if tabs|length %}hidden{% endif %}">#}
-{#        {% include 'mollie-subscription/_payment/_transactions.twig' with {transactions : transactions } only %}#}
-{#    </div>#}
+    <div id="tab-payments" class="{% if tabs|length %}hidden{% endif %}">
+        {% include 'mollie-subscriptions/_elements/_subscriptions/_payments.twig' with {payments : payments } only %}
+    </div>
 
 {% endblock %}
 
