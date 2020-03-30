@@ -10,9 +10,6 @@
 
 namespace studioespresso\molliesubscriptions\controllers;
 
-use studioespresso\molliesubscriptions\MollieSubscriptions;
-
-use Craft;
 use craft\web\Controller;
 
 /**
@@ -47,7 +44,7 @@ class DefaultController extends Controller
      * @return mixed
      */
     public function actionIndex() {
-        return  $this->renderTemplate('mollie-subscriptions/_elements/_index.twig');
+        return  $this->renderTemplate('mollie-subscriptions/_elements/_subscriptions/_index.twig');
     }
 
 }

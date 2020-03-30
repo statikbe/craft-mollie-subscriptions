@@ -7,8 +7,8 @@ use craft\base\Component;
 use craft\helpers\UrlHelper;
 use Mollie\Api\MollieApiClient;
 use Mollie\Api\Resources\Customer;
+use studioespresso\molliesubscriptions\elements\Subscriber;
 use studioespresso\molliesubscriptions\elements\Subscription;
-use studioespresso\molliesubscriptions\models\SubscriberModel;
 use studioespresso\molliesubscriptions\models\SubscriptionPaymentModel;
 use studioespresso\molliesubscriptions\models\SubscriptionPlanModel;
 use studioespresso\molliesubscriptions\MollieSubscriptions;
@@ -27,14 +27,14 @@ class Mollie extends Component
 
     }
 
-    public function createFirstPayment(Subscription $subscription, SubscriberModel $subscriber, SubscriptionPlanModel $plan, $redirect)
+    public function createFirstPayment(Subscription $subscription, Subscriber $subscriber, SubscriptionPlanModel $plan, $redirect)
     {
         $response = $this->mollie->payments->create([
             "amount" => [
                 "value" => $plan->amount,
                 "currency" => $plan->currency
             ],
-            "customerId" => $subscriber->id,
+            "customerId" => $subscriber->customerId ,
             "sequenceType" => "first",
             "description" => $plan->description,
             "redirectUrl" => UrlHelper::url("{$this->baseUrl}mollie-subscriptions/subscriptions/process", [
@@ -68,7 +68,8 @@ class Mollie extends Component
     {
         /** @var Customer $customer */
         $plan = MollieSubscriptions::$plugin->plans->getPlanById($subscription->plan);
-        $customer = $this->getCustomer($subscription->subscriber);
+        $subscriber = Subscriber::findOne(['id' => $subscription->subscriber]);
+        $customer = $this->getCustomer($subscriber->customerId);
         $data = [
             "amount" => [
                 "value" => $plan->amount,

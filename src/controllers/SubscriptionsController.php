@@ -59,7 +59,7 @@ class SubscriptionsController extends Controller
     public function actionIndex()
     {
 
-        return $this->renderTemplate('mollie-subscriptions/_elements/_index.twig');
+        return $this->renderTemplate('mollie-subscriptions/_elements/_subscriptions/_index.twig');
     }
 
     public function actionSubscribe()

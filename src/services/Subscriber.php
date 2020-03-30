@@ -34,8 +34,6 @@ class Subscriber extends Component
             }
             Craft::$app->getElements()->saveElement($subscriber);
         }
-        dd($subscriber);
-
         return $subscriber;
     }
 
