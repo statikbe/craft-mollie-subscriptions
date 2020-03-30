@@ -110,8 +110,9 @@ class MollieSubscriptions extends Plugin
             UrlManager::EVENT_REGISTER_CP_URL_RULES,
             function (RegisterUrlRulesEvent $event) {
                 $event->rules['mollie-subscriptions'] = 'mollie-subscriptions/default/index';
-                $event->rules['mollie-subscriptions/subscribers'] = 'mollie-subscriptions/subscribers/index';
                 $event->rules['mollie-subscriptions/subscription/<uid:{uid}>'] = 'mollie-subscriptions/default/edit';
+                $event->rules['mollie-subscriptions/subscribers'] = 'mollie-subscriptions/subscribers/index';
+                $event->rules['mollie-subscriptions/subscribers/<uid:{uid}>'] = 'mollie-subscriptions/subscribers/edit';
                 $event->rules['mollie-subscriptions/plans'] = 'mollie-subscriptions/plan/index';
                 $event->rules['mollie-subscriptions/plans/add'] = 'mollie-subscriptions/plan/edit';
                 $event->rules['mollie-subscriptions/plans/<planId:\d+>'] = 'mollie-subscriptions/plan/edit';

@@ -10,6 +10,7 @@
 
 namespace studioespresso\molliesubscriptions\elements;
 
+use craft\helpers\UrlHelper;
 use studioespresso\molliesubscriptions\elements\db\SubscriberQuery;
 use studioespresso\molliesubscriptions\elements\db\SubscriptionQuery;
 use studioespresso\molliesubscriptions\MollieSubscriptions;
@@ -128,6 +129,14 @@ class Subscriber extends Element
             'email' => Craft::t('mollie-subscriptions', 'Email'),
             'customerId' => Craft::t('mollie-subscriptions', 'Customer ID'),
         ];
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getCpEditUrl()
+    {
+        return UrlHelper::cpUrl("mollie-subscriptions/subscribers/" . $this->uid);
     }
 
     // Public Methods

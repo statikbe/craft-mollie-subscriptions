@@ -117,8 +117,6 @@ class Subscription extends Element
         return UrlHelper::cpUrl("mollie-subscriptions/subscription/" . $this->uid);
     }
 
-
-
     /**
      * @param string|null $context The context ('index' or 'modal').
      *

@@ -10,14 +10,9 @@
 
 namespace studioespresso\molliesubscriptions\controllers;
 
-use craft\commerce\models\Customer;
-use craft\helpers\UrlHelper;
-use studioespresso\molliesubscriptions\elements\Subscription;
-use studioespresso\molliesubscriptions\MollieSubscriptions;
-
-use Craft;
 use craft\web\Controller;
-use yii\web\UnauthorizedHttpException;
+use studioespresso\molliesubscriptions\elements\Subscriber;
+use studioespresso\molliesubscriptions\MollieSubscriptions;
 
 /**
  * Default Controller
@@ -43,19 +38,18 @@ class SubscribersController extends Controller
 {
     protected $allowAnonymous = [];
 
-    public function beforeAction($action)
-    {
-        if (!MollieSubscriptions::$plugin->getSettings()->apiKey) {
-            throw new InvalidConfigException("No Mollie API key set");
-        }
-        return parent::beforeAction($action);
-    }
-
     // Public Methods// =========================================================================
     public function actionIndex()
     {
-
         return $this->renderTemplate('mollie-subscriptions/_elements/_subscribers/_index.twig');
+    }
+
+    public function actionEdit($uid)
+    {
+        $subscriber = Subscriber::findOne(['uid' => $uid]);
+        $this->renderTemplate('mollie-subscriptions/_elements/_subscribers/_edit', [
+            'element' => $subscriber,
+        ]);
     }
 
 
