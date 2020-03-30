@@ -80,6 +80,8 @@ class SubscriptionsController extends Controller
         $subscription->plan = $plan->id;
         $subscription->amount = $plan->amount;
         $subscription->subscriptionStatus = 'Pending first payment';
+        $subscription->fieldLayoutId = $plan->fieldLayout;
+
         $subscription->setFieldValuesFromRequest('fields');
 
         if (!$subscription->validate()) {

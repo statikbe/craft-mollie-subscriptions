@@ -114,12 +114,12 @@
         errors: errors is defined and errors.interval is defined ? errors.interval
     }) }}
 
-    {% if form is not defined or not form.handle|length %}
+    {% if plan is not defined or not plan.handle|length %}
         {% js %}
             new Craft.HandleGenerator('#title', '#handle');
         {% endjs %}
     {% endif %}
-    {% if form is defined %}
+    {% if plan is defined %}
         {% include "_includes/fieldlayoutdesigner" with {
             fieldLayout: layout
         } only %}

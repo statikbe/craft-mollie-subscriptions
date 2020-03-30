@@ -11,6 +11,10 @@
 namespace studioespresso\molliesubscriptions\controllers;
 
 use craft\web\Controller;
+use studioespresso\molliepayments\elements\Payment;
+use studioespresso\molliepayments\MolliePayments;
+use studioespresso\molliesubscriptions\elements\Subscription;
+use studioespresso\molliesubscriptions\MollieSubscriptions;
 
 /**
  * Default Controller
@@ -43,8 +47,19 @@ class DefaultController extends Controller
      *
      * @return mixed
      */
-    public function actionIndex() {
-        return  $this->renderTemplate('mollie-subscriptions/_elements/_subscriptions/_index.twig');
+    public function actionIndex()
+    {
+        return $this->renderTemplate('mollie-subscriptions/_elements/_subscriptions/_index.twig');
+    }
+
+    public function actionEdit($uid)
+    {
+        $subscription = Subscription::findOne(['uid' => $uid]);
+        $plan = MollieSubscriptions::$plugin->plans->getPlanById($subscription->plan);
+        $this->renderTemplate('mollie-subscriptions/_elements/_subscriptions/_edit', [
+            'element' => $subscription,
+            'plan' => $plan]
+        );
     }
 
 }

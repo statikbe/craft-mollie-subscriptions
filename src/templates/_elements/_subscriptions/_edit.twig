@@ -1,0 +1,53 @@
+{% extends "_layouts/cp" %}
+{% import "_includes/forms" as forms %}
+
+{% set fullPageForm = true %}
+{% set saveShortcutRedirect = continueEditingUrl ?? "" %}
+
+{% set crumbs = [
+    { label: "Subscriptions", url: cpUrl('mollie-subscription') },
+    { label: 'Subscriptions', url: '#' },
+] %}
+
+{% set title = "Subscriptions for "|t('mollie-subscription') ~ plan.title ~' - '~ element.email %}
+{% block header %}
+    {{ block('pageTitle') }}
+    {{ block('contextMenu') }}
+{% endblock %}
+{% set tabData = [] %}
+{% for tab in element.getFieldLayout().getTabs() %}
+    {% set data = { label: tab.name, url: '#' ~ tab.getHtmlId()} %}
+    {% set tabData = tabData|merge({ (tab.id) : data}) %}
+{% endfor %}
+{% set tabData = tabData|merge( {translactions: { label: "Transactions", url : "#tab-transactions"} }) %}
+
+{% set tabs = tabData %}
+
+{% block content %}
+    {% set tabs = element.getFieldLayout().getTabs() %}
+    {% for tab in tabs %}
+        <div id="{{ tab.getHtmlId() }}" {% if not loop.first %} class="hidden"{% endif %}>
+            {% include "_includes/fields" with {
+                fields:  tab.getFields(),
+                element: element
+            } only %}
+        </div>
+    {% endfor %}
+{#    <div id="tab-transactions" class="{% if tabs|length %}hidden{% endif %}">#}
+{#        {% include 'mollie-subscription/_payment/_transactions.twig' with {transactions : transactions } only %}#}
+{#    </div>#}
+
+{% endblock %}
+
+{% block details %}
+    <div id="settings" class="meta">
+        <div class="field" id="email-field">
+            <div class="heading">
+                <label id="slug-label" for="slug">{{ "Email"|t("mollie-subscription") }}</label>
+            </div>
+            <div class="input ltr">
+                <input class="text fullwidth" disabled type="text" value="{{ element.email }}" autocomplete="off" autocorrect="off" autocapitalize="off" placeholder="Enter slug">
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -10,6 +10,7 @@
 
 namespace studioespresso\molliesubscriptions\elements;
 
+use craft\helpers\UrlHelper;
 use studioespresso\molliesubscriptions\elements\db\SubscriptionQuery;
 use studioespresso\molliesubscriptions\MollieSubscriptions;
 
@@ -100,9 +101,22 @@ class Subscription extends Element
         return "{$plan->title} - {$this->email}";
     }
 
+    /**
+     * @return \studioespresso\molliesubscriptions\models\SubscriptionPlanModel
+     * @throws \yii\web\NotFoundHttpException
+     */
     public function getPlan() {
         return MollieSubscriptions::$plugin->plans->getPlanById($this->plan);
     }
+
+    /**
+     * @return string|null
+     */
+    public function getCpEditUrl()
+    {
+        return UrlHelper::cpUrl("mollie-subscriptions/subscription/" . $this->uid);
+    }
+
 
 
     /**
