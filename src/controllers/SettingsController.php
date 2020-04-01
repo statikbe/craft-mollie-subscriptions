@@ -1,11 +1,11 @@
 <?php
 
-namespace studioespresso\molliesubscriptions\controllers;
+namespace statikbe\molliesubscriptions\controllers;
 
 use Craft;
 use craft\web\Controller;
-use studioespresso\molliepayments\MolliePayments;
-use studioespresso\molliesubscriptions\MollieSubscriptions;
+use statikbe\molliepayments\MolliePayments;
+use statikbe\molliesubscriptions\MollieSubscriptions;
 
 class SettingsController extends Controller
 {

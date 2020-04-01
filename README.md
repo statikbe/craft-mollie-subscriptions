@@ -18,7 +18,7 @@ To install the plugin, follow these instructions.
 
 2. Then tell Composer to load the plugin:
 
-        composer require studioespresso/craft-mollie-subscriptions
+        composer require statikbe/craft-mollie-subscriptions
 
 3. In the Control Panel, go to Settings → Plugins and click the “Install” button for Mollie Subscriptions.
 
@@ -40,4 +40,4 @@ Some things to do, and ideas for potential features:
 
 * Release it
 
-Brought to you by [Studio Espresso](https://www.studioespresso.co)
+Brought to you by [Statik.be](https://www.statik.be)

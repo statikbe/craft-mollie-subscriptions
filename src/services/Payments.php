@@ -1,18 +1,18 @@
 <?php
 
-namespace studioespresso\molliesubscriptions\services;
+namespace statikbe\molliesubscriptions\services;
 
 use Craft;
 use craft\base\Component;
 use Mollie\Api\Resources\Customer;
-use studioespresso\molliepayments\models\PaymentTransactionModel;
-use studioespresso\molliepayments\records\PaymentTransactionRecord;
-use studioespresso\molliesubscriptions\elements\Subscription;
-use studioespresso\molliesubscriptions\models\SubscriberModel;
-use studioespresso\molliesubscriptions\models\SubscriptionPaymentModel;
-use studioespresso\molliesubscriptions\MollieSubscriptions;
-use studioespresso\molliesubscriptions\records\SubscriberRecord;
-use studioespresso\molliesubscriptions\records\SubscriptionPaymentRecord;
+use statikbe\molliepayments\models\PaymentTransactionModel;
+use statikbe\molliepayments\records\PaymentTransactionRecord;
+use statikbe\molliesubscriptions\elements\Subscription;
+use statikbe\molliesubscriptions\models\SubscriberModel;
+use statikbe\molliesubscriptions\models\SubscriptionPaymentModel;
+use statikbe\molliesubscriptions\MollieSubscriptions;
+use statikbe\molliesubscriptions\records\SubscriberRecord;
+use statikbe\molliesubscriptions\records\SubscriptionPaymentRecord;
 
 class Payments extends Component
 {

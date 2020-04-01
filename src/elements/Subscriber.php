@@ -4,28 +4,28 @@
  *
  * Subscriptions through Mollie
  *
- * @link      https://www.studioespresso.co
- * @copyright Copyright (c) 2020 Studio Espresso
+ * @link      https://www.statik.be
+ * @copyright Copyright (c) 2020 Statik
  */
 
-namespace studioespresso\molliesubscriptions\elements;
+namespace statikbe\molliesubscriptions\elements;
 
 use craft\helpers\UrlHelper;
-use studioespresso\molliesubscriptions\elements\db\SubscriberQuery;
-use studioespresso\molliesubscriptions\elements\db\SubscriptionQuery;
-use studioespresso\molliesubscriptions\MollieSubscriptions;
+use statikbe\molliesubscriptions\elements\db\SubscriberQuery;
+use statikbe\molliesubscriptions\elements\db\SubscriptionQuery;
+use statikbe\molliesubscriptions\MollieSubscriptions;
 
 use Craft;
 use craft\base\Element;
 use craft\elements\db\ElementQuery;
 use craft\elements\db\ElementQueryInterface;
-use studioespresso\molliesubscriptions\records\SubscriberRecord;
-use studioespresso\molliesubscriptions\records\SubscriptionRecord;
+use statikbe\molliesubscriptions\records\SubscriberRecord;
+use statikbe\molliesubscriptions\records\SubscriptionRecord;
 
 /**
  * Subscriber Element
  *
- * @author    Studio Espresso
+ * @author    Statik
  * @package   MollieSubscriptions
  * @since     1.0.0
  */

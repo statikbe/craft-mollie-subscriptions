@@ -1,17 +1,17 @@
 <?php
 
-namespace studioespresso\molliesubscriptions\services;
+namespace statikbe\molliesubscriptions\services;
 
 use Craft;
 use craft\base\Component;
 use craft\helpers\UrlHelper;
 use Mollie\Api\MollieApiClient;
 use Mollie\Api\Resources\Customer;
-use studioespresso\molliesubscriptions\elements\Subscriber;
-use studioespresso\molliesubscriptions\elements\Subscription;
-use studioespresso\molliesubscriptions\models\SubscriptionPaymentModel;
-use studioespresso\molliesubscriptions\models\SubscriptionPlanModel;
-use studioespresso\molliesubscriptions\MollieSubscriptions;
+use statikbe\molliesubscriptions\elements\Subscriber;
+use statikbe\molliesubscriptions\elements\Subscription;
+use statikbe\molliesubscriptions\models\SubscriptionPaymentModel;
+use statikbe\molliesubscriptions\models\SubscriptionPlanModel;
+use statikbe\molliesubscriptions\MollieSubscriptions;
 
 class Mollie extends Component
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace studioespresso\molliesubscriptions\elements\db;
+namespace statikbe\molliesubscriptions\elements\db;
 
 use craft\elements\db\ElementQuery;
 use craft\helpers\Db;

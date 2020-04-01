@@ -4,22 +4,22 @@
  *
  * Subscriptions through Mollie
  *
- * @link      https://www.studioespresso.co
- * @copyright Copyright (c) 2020 Studio Espresso
+ * @link      https://www.statik.be
+ * @copyright Copyright (c) 2020 Statik
  */
 
-namespace studioespresso\molliesubscriptions;
+namespace statikbe\molliesubscriptions;
 
 use craft\helpers\UrlHelper;
-use studioespresso\molliesubscriptions\models\Settings;
-use studioespresso\molliesubscriptions\services\Currency;
-use studioespresso\molliesubscriptions\services\Mollie;
-use studioespresso\molliesubscriptions\services\Payment;
-use studioespresso\molliesubscriptions\services\Payments;
-use studioespresso\molliesubscriptions\services\Plans;
-use studioespresso\molliesubscriptions\services\Subscriber;
-use studioespresso\molliesubscriptions\variables\MollieSubscriptionsVariable;
-use studioespresso\molliesubscriptions\elements\Subscription as SubscriptionElement;
+use statikbe\molliesubscriptions\models\Settings;
+use statikbe\molliesubscriptions\services\Currency;
+use statikbe\molliesubscriptions\services\Mollie;
+use statikbe\molliesubscriptions\services\Payment;
+use statikbe\molliesubscriptions\services\Payments;
+use statikbe\molliesubscriptions\services\Plans;
+use statikbe\molliesubscriptions\services\Subscriber;
+use statikbe\molliesubscriptions\variables\MollieSubscriptionsVariable;
+use statikbe\molliesubscriptions\elements\Subscription as SubscriptionElement;
 
 use Craft;
 use craft\base\Plugin;
@@ -43,7 +43,7 @@ use yii\base\Event;
  *
  * https://craftcms.com/docs/plugins/introduction
  *
- * @author    Studio Espresso
+ * @author    Statik
  * @package   MollieSubscriptions
  * @since     1.0.0
  * @property Plans plans

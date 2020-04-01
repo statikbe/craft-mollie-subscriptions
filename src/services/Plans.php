@@ -1,13 +1,13 @@
 <?php
 
-namespace studioespresso\molliesubscriptions\services;
+namespace statikbe\molliesubscriptions\services;
 
 use craft\base\Component;
-use studioespresso\molliepayments\models\PaymentFormModel;
-use studioespresso\molliepayments\records\PaymentFormRecord;
-use studioespresso\molliepayments\elements\Payment as PaymentElement;
-use studioespresso\molliesubscriptions\models\SubscriptionPlanModel;
-use studioespresso\molliesubscriptions\records\SubscriptionPlanRecord;
+use statikbe\molliepayments\models\PaymentFormModel;
+use statikbe\molliepayments\records\PaymentFormRecord;
+use statikbe\molliepayments\elements\Payment as PaymentElement;
+use statikbe\molliesubscriptions\models\SubscriptionPlanModel;
+use statikbe\molliesubscriptions\records\SubscriptionPlanRecord;
 use yii\web\NotFoundHttpException;
 
 class Plans extends Component

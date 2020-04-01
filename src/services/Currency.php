@@ -1,11 +1,11 @@
 <?php
 
-namespace studioespresso\molliesubscriptions\services;
+namespace statikbe\molliesubscriptions\services;
 
 use craft\base\Component;
-use studioespresso\molliepayments\models\PaymentFormModel;
-use studioespresso\molliepayments\records\PaymentFormRecord;
-use studioespresso\molliepayments\elements\Payment as PaymentElement;
+use statikbe\molliepayments\models\PaymentFormModel;
+use statikbe\molliepayments\records\PaymentFormRecord;
+use statikbe\molliepayments\elements\Payment as PaymentElement;
 
 class Currency extends Component
 {

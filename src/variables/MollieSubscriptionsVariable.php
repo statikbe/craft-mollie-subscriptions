@@ -4,13 +4,13 @@
  *
  * Subscriptions through Mollie
  *
- * @link      https://www.studioespresso.co
- * @copyright Copyright (c) 2020 Studio Espresso
+ * @link      https://www.statik.be
+ * @copyright Copyright (c) 2020 Statik
  */
 
-namespace studioespresso\molliesubscriptions\variables;
+namespace statikbe\molliesubscriptions\variables;
 
-use studioespresso\molliesubscriptions\MollieSubscriptions;
+use statikbe\molliesubscriptions\MollieSubscriptions;
 
 use Craft;
 
@@ -22,7 +22,7 @@ use Craft;
  *
  * https://craftcms.com/docs/plugins/variables
  *
- * @author    Studio Espresso
+ * @author    Statik
  * @package   MollieSubscriptions
  * @since     1.0.0
  */

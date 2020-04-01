@@ -1,6 +1,6 @@
 <?php
 
-namespace studioespresso\molliesubscriptions\models;
+namespace statikbe\molliesubscriptions\models;
 
 use craft\base\Model;
 

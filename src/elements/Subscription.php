@@ -4,26 +4,26 @@
  *
  * Subscriptions through Mollie
  *
- * @link      https://www.studioespresso.co
- * @copyright Copyright (c) 2020 Studio Espresso
+ * @link      https://www.statik.be
+ * @copyright Copyright (c) 2020 Statik
  */
 
-namespace studioespresso\molliesubscriptions\elements;
+namespace statikbe\molliesubscriptions\elements;
 
 use craft\helpers\UrlHelper;
-use studioespresso\molliesubscriptions\elements\db\SubscriptionQuery;
-use studioespresso\molliesubscriptions\MollieSubscriptions;
+use statikbe\molliesubscriptions\elements\db\SubscriptionQuery;
+use statikbe\molliesubscriptions\MollieSubscriptions;
 
 use Craft;
 use craft\base\Element;
 use craft\elements\db\ElementQuery;
 use craft\elements\db\ElementQueryInterface;
-use studioespresso\molliesubscriptions\records\SubscriptionRecord;
+use statikbe\molliesubscriptions\records\SubscriptionRecord;
 
 /**
  * Subscription Element
  *
- * @author    Studio Espresso
+ * @author    Statik
  * @package   MollieSubscriptions
  * @since     1.0.0
  */
@@ -102,7 +102,7 @@ class Subscription extends Element
     }
 
     /**
-     * @return \studioespresso\molliesubscriptions\models\SubscriptionPlanModel
+     * @return \statikbe\molliesubscriptions\models\SubscriptionPlanModel
      * @throws \yii\web\NotFoundHttpException
      */
     public function getPlan() {

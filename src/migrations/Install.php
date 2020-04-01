@@ -1,16 +1,16 @@
 <?php
 
-namespace studioespresso\molliesubscriptions\migrations;
+namespace statikbe\molliesubscriptions\migrations;
 
 use Craft;
 use craft\db\Migration;
-use studioespresso\molliesubscriptions\records\SubscriberRecord;
-use studioespresso\molliesubscriptions\records\SubscriptionPaymentRecord;
-use studioespresso\molliesubscriptions\records\SubscriptionPlanRecord;
-use studioespresso\molliesubscriptions\records\SubscriptionRecord;
+use statikbe\molliesubscriptions\records\SubscriberRecord;
+use statikbe\molliesubscriptions\records\SubscriptionPaymentRecord;
+use statikbe\molliesubscriptions\records\SubscriptionPlanRecord;
+use statikbe\molliesubscriptions\records\SubscriptionRecord;
 
 /***
- * @author    Studio Espresso
+ * @author    Statik
  * @package   MollieSubscriptions
  * @since     1.0.0
  */

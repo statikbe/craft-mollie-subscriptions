@@ -4,15 +4,15 @@
  *
  * Subscriptions through Mollie
  *
- * @link      https://www.studioespresso.co
- * @copyright Copyright (c) 2020 Studio Espresso
+ * @link      https://www.statik.be
+ * @copyright Copyright (c) 2020 Statik
  */
 
-namespace studioespresso\molliesubscriptions\controllers;
+namespace statikbe\molliesubscriptions\controllers;
 
 use craft\web\Controller;
-use studioespresso\molliesubscriptions\elements\Subscriber;
-use studioespresso\molliesubscriptions\MollieSubscriptions;
+use statikbe\molliesubscriptions\elements\Subscriber;
+use statikbe\molliesubscriptions\MollieSubscriptions;
 
 /**
  * Default Controller
@@ -30,7 +30,7 @@ use studioespresso\molliesubscriptions\MollieSubscriptions;
  *
  * https://craftcms.com/docs/plugins/controllers
  *
- * @author    Studio Espresso
+ * @author    Statik
  * @package   MollieSubscriptions
  * @since     1.0.0
  */

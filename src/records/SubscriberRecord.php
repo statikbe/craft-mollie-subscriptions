@@ -1,6 +1,6 @@
 <?php
 
-namespace studioespresso\molliesubscriptions\records;
+namespace statikbe\molliesubscriptions\records;
 
 use craft\db\ActiveRecord;
 

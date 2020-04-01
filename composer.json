@@ -1,5 +1,5 @@
 {
-    "name": "studioespresso/craft-mollie-subscriptions",
+    "name": "statikbe/craft-mollie-subscriptions",
     "description": "Subscriptions through Mollie",
     "type": "craft-plugin",
     "version": "1.0.0",
@@ -13,8 +13,8 @@
         "mollie subscriptions"
     ],
     "support": {
-        "docs": "https://github.com/studioespresso/craft-mollie-subscriptions/blob/master/README.md",
-        "issues": "https://github.com/studioespresso/craft-mollie-subscriptions/issues"
+        "docs": "https://github.com/statikbe/craft-mollie-subscriptions/blob/master/README.md",
+        "issues": "https://github.com/statikbe/craft-mollie-subscriptions/issues"
     },
     "license": "MIT",
     "require": {
@@ -23,7 +23,7 @@
     },
     "autoload": {
         "psr-4": {
-          "studioespresso\\molliesubscriptions\\": "src/"
+          "statikbe\\molliesubscriptions\\": "src/"
         }
     },
     "extra": {
@@ -31,7 +31,7 @@
         "handle": "mollie-subscriptions",
         "hasCpSettings": true,
         "hasCpSection": true,
-        "changelogUrl": "https://raw.githubusercontent.com/studioespresso/craft-mollie-subscriptions/master/CHANGELOG.md",
-        "class": "studioespresso\\molliesubscriptions\\MollieSubscriptions"
+        "changelogUrl": "https://raw.githubusercontent.com/statikbe/craft-mollie-subscriptions/master/CHANGELOG.md",
+        "class": "statikbe\\molliesubscriptions\\MollieSubscriptions"
     }
 }
