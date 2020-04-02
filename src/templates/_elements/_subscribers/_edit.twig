@@ -2,12 +2,13 @@
 {% import "_includes/forms" as forms %}
 
 {% set fullPageForm = true %}
-{% set saveShortcutRedirect = continueEditingUrl ?? "" %}
 
 {% set crumbs = [
-    { label: "Subscriptions", url: cpUrl('mollie-subscription') },
-    { label: 'Subscribers', url: '#' },
+    { label: "Subscriptions", url: cpUrl('mollie-subscriptions') },
+    { label: 'Subscribers', url: cpUrl('mollie-subscriptions/subscribers') },
 ] %}
+
+{% set selectedSubnavItem = 'subscribers' %}
 
 {% set title = element.email %}
 {% block header %}
@@ -23,7 +24,9 @@
         {% set plan = craft.subscriptions.getPlanById(id) %}
         <h2>{{ plan.title }}</h2>
         {% for subscription in subscriptions %}
-            {{ subscription.dateCreated|date('d/m/y') }} - {{ subscription.amount }} {{ plan.currency }}
+            <a href="{{ cpUrl('mollie-subscriptions/subscription/' ~ subscription.uid) }}" target="_blank">
+                {{ subscription.dateCreated|date('d/m/y') }} - {{ subscription.amount }} {{ plan.currency }}
+            </a>
         {% endfor %}
         <hr>
     {% endfor %}
