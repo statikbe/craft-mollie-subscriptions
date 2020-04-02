@@ -12,7 +12,7 @@ namespace statikbe\molliesubscriptions\controllers;
 
 use craft\web\Controller;
 use statikbe\molliesubscriptions\elements\Subscriber;
-use statikbe\molliesubscriptions\MollieSubscriptions;
+use statikbe\molliesubscriptions\elements\Subscription;
 
 /**
  * Default Controller
@@ -47,8 +47,10 @@ class SubscribersController extends Controller
     public function actionEdit($uid)
     {
         $subscriber = Subscriber::findOne(['uid' => $uid]);
+        $subscriptions = Subscription::findAll(['subscriber' => $subscriber->id]);
         $this->renderTemplate('mollie-subscriptions/_elements/_subscribers/_edit', [
             'element' => $subscriber,
+            'subscriptions' => $subscriptions
         ]);
     }
 

@@ -14,6 +14,8 @@ class SubscriptionQuery extends ElementQuery
 
     public $email;
 
+    public $subscriber;
+
     public function email($value)
     {
         $this->email = $value;
@@ -36,6 +38,12 @@ class SubscriptionQuery extends ElementQuery
     public function plan($value)
     {
         $this->plan = $value;
+        return $this;
+    }
+
+    public function subscriber($value)
+    {
+        $this->subscriber = $value;
         return $this;
     }
 
@@ -76,6 +84,10 @@ class SubscriptionQuery extends ElementQuery
 
         if ($this->subscriptionStatus) {
             $this->subQuery->andWhere(Db::parseParam('mollie_subscriptions.subscriptionStatus', $this->status));
+        }
+
+        if ($this->subscriber) {
+            $this->subQuery->andWhere(Db::parseParam('mollie_subscriptions.subscriber', $this->subscriber));
         }
 
         return parent::beforePrepare();

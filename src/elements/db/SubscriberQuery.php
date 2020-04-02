@@ -10,6 +10,7 @@ class SubscriberQuery extends ElementQuery
 
     public $email;
 
+
     public function email($value)
     {
         $this->email = $value;

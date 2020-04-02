@@ -17,7 +17,16 @@
 
 
 {% block content %}
-    mlkj
+
+    {% set subscriptionsByPlan = subscriptions|group(e => e.plan) %}
+    {% for id, subscriptions in subscriptionsByPlan %}
+        {% set plan = craft.subscriptions.getPlanById(id) %}
+        <h2>{{ plan.title }}</h2>
+        {% for subscription in subscriptions %}
+            {{ subscription.dateCreated|date('d/m/y') }} - {{ subscription.amount }} {{ plan.currency }}
+        {% endfor %}
+        <hr>
+    {% endfor %}
 {% endblock %}
 
 {% block details %}

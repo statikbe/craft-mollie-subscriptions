@@ -11,6 +11,7 @@
 namespace statikbe\molliesubscriptions;
 
 use craft\helpers\UrlHelper;
+use statikbe\molliesubscriptions\behaviors\CraftVariableBehavior;
 use statikbe\molliesubscriptions\models\Settings;
 use statikbe\molliesubscriptions\services\Currency;
 use statikbe\molliesubscriptions\services\Mollie;
@@ -148,6 +149,14 @@ class MollieSubscriptions extends Plugin
                 $variable->set('subscriptions', MollieSubscriptionsVariable::class);
             }
         );
+
+        Event::on(CraftVariable::class, CraftVariable::EVENT_INIT, function(Event $e) {
+            /** @var CraftVariable $variable */
+            $variable = $e->sender;
+            $variable->attachBehaviors([
+                CraftVariableBehavior::class,
+            ]);
+        });
 
         // Do something after we're installed
         Event::on(
