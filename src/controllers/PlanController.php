@@ -80,6 +80,7 @@ class PlanController extends Controller
         $planModel->handle = Craft::$app->getRequest()->getBodyParam('handle');
         $planModel->currency = Craft::$app->getRequest()->getBodyParam('currency');
         $planModel->amount = Craft::$app->getRequest()->getBodyParam('amount');
+        $planModel->times = Craft::$app->getRequest()->getBodyParam('times');
         $planModel->description = Craft::$app->getRequest()->getBodyParam('description');
         $planModel->interval = Craft::$app->getRequest()->getBodyParam('interval');
         $planModel->intervalType = Craft::$app->getRequest()->getBodyParam('intervalType');
