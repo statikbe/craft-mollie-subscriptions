@@ -16,6 +16,7 @@ use craft\elements\db\ElementQueryInterface;
 use craft\helpers\UrlHelper;
 use statikbe\molliesubscriptions\actions\ExportAllSubscribersAction;
 use statikbe\molliesubscriptions\elements\db\SubscriberQuery;
+use statikbe\molliesubscriptions\MollieSubscriptions;
 use statikbe\molliesubscriptions\records\SubscriberRecord;
 
 /**
@@ -94,6 +95,11 @@ class Subscriber extends Element
         return new SubscriberQuery(static::class);
     }
 
+    public function getTotalForThisYear()
+    {
+       return MollieSubscriptions::$plugin->subscriber->getTotalByYear($this);
+    }
+
     /**
      * @param string|null $context The context ('index' or 'modal').
      *
@@ -124,8 +130,24 @@ class Subscriber extends Element
         return [
             'email' => Craft::t('mollie-subscriptions', 'Email'),
             'customerId' => Craft::t('mollie-subscriptions', 'Customer ID'),
+            'totalForThisYear' => Craft::t('mollie-subscriptions', 'Total amount spent this year')
         ];
     }
+
+    public function getTableAttributeHtml(string $attribute): string
+    {
+
+        switch ($attribute) {
+            case 'customerId':
+                return $this->customerId;
+            case 'totalForThisYear':
+                return $this->getTotalForThisYear();
+
+        }
+        return '';
+
+    }
+
 
     protected static function defineActions(string $source = null): array
     {

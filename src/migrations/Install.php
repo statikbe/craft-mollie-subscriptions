@@ -108,6 +108,7 @@ class Install extends Migration
             $this->createTable(SubscriptionPaymentRecord::tableName(), [
                 'id' => $this->string()->notNull(),
                 'subscription' => $this->integer()->notNull(),
+                'customerId' => $this->string(30),
                 'amount' => $this->decimal("10,2")->notNull(),
                 'currency' => $this->string(3)->defaultValue('EUR'),
                 'status' => $this->string()->notNull(),

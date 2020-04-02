@@ -52,6 +52,7 @@ class Mollie extends Component
 
         $payment = new SubscriptionPaymentModel();
         $payment->id = $response->id;
+        $payment->customerId = $subscriber->customerId;
         $payment->subscription = $subscription->id;
         $payment->currency = $plan->currency;
         $payment->amount = $subscription->amount;

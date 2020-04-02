@@ -6,10 +6,9 @@ namespace statikbe\molliesubscriptions\services;
 use Craft;
 use craft\base\Component;
 use Mollie\Api\Resources\Customer;
-use statikbe\molliesubscriptions\models\SubscriberModel;
-use statikbe\molliesubscriptions\MollieSubscriptions;
-use statikbe\molliesubscriptions\records\SubscriberRecord;
 use statikbe\molliesubscriptions\elements\Subscriber as SubscriberElement;
+use statikbe\molliesubscriptions\elements\Subscription;
+use statikbe\molliesubscriptions\MollieSubscriptions;
 
 class Subscriber extends Component
 {
@@ -17,15 +16,15 @@ class Subscriber extends Component
     public function getOrCreateSubscriberByEmail($email)
     {
         $subscriber = SubscriberElement::findOne(['email' => $email]);
-        if(!$subscriber) {
+        if (!$subscriber) {
             /** @var Customer $customer */
-            $customer =  MollieSubscriptions::$plugin->mollie->createCustomer($email);
+            $customer = MollieSubscriptions::$plugin->mollie->createCustomer($email);
             $subscriber = new SubscriberElement();
             $subscriber->customerId = $customer->id;
             $subscriber->email = $customer->email;
-            $subscriber->name  = $customer->name;
+            $subscriber->name = $customer->name;
             $subscriber->locale = $customer->locale;
-            $subscriber->metadata  = $customer->metadata;
+            $subscriber->metadata = $customer->metadata;
             $subscriber->links = $customer->_links;
 
             if (Craft::$app->getUser()->getIdentity()) {
@@ -35,6 +34,12 @@ class Subscriber extends Component
             Craft::$app->getElements()->saveElement($subscriber);
         }
         return $subscriber;
+    }
+
+    public function getTotalByYear(SubscriberElement $subscriber)
+    {
+        $subscriptions = Subscription::findAll(['subscriber' => $subscriber->id]);
+        dd($subscriptions);
     }
 
 }

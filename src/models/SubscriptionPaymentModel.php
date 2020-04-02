@@ -34,6 +34,8 @@ class SubscriptionPaymentModel extends Model
 
     public $subscription;
 
+    public $customerId;
+
     public $status;
 
     public $amount;
