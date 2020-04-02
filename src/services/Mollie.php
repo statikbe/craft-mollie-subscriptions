@@ -31,10 +31,10 @@ class Mollie extends Component
     {
         $response = $this->mollie->payments->create([
             "amount" => [
-                "value" => number_format((float) $subscription->amount, 2, '.', ''),
+                "value" => number_format((float)$subscription->amount, 2, '.', ''),
                 "currency" => $plan->currency
             ],
-            "customerId" => $subscriber->customerId ,
+            "customerId" => $subscriber->customerId,
             "sequenceType" => "first",
             "description" => $plan->description,
             "redirectUrl" => UrlHelper::url("{$this->baseUrl}mollie-subscriptions/subscriptions/process", [
@@ -46,7 +46,7 @@ class Mollie extends Component
             "metadata" => [
                 "plan" => $plan->id,
                 "customer" => $subscriber->id,
-                "createSubscription"  => $plan->times == 1  ? false : true
+                "createSubscription" => $plan->times == 1 ? false : true
             ],
         ]);
 
@@ -86,11 +86,18 @@ class Mollie extends Component
         }
 
         $response = $customer->createSubscription($data);
-        if($response) {
+        if ($response) {
             $subscription->subscriptionStatus = "Active";
+            $subscription->subscriptionId = $response->id;
             Craft::$app->getElements()->saveElement($subscription);
         }
 
+    }
+
+    public function getSubscriptionsForUser($id)
+    {
+        $customer = $this->getCustomer($id);
+        return $customer->subscriptions();
     }
 
     public function createCustomer($email)

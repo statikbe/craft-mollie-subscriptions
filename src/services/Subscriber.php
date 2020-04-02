@@ -9,9 +9,8 @@ use craft\db\Query;
 use craft\helpers\Db;
 use Mollie\Api\Resources\Customer;
 use statikbe\molliesubscriptions\elements\Subscriber as SubscriberElement;
-use statikbe\molliesubscriptions\elements\Subscription;
 use statikbe\molliesubscriptions\MollieSubscriptions;
-use statikbe\molliesubscriptions\records\SubscriptionPaymentRecord;
+use statikbe\molliesubscriptions\records\SubscriberRecord;
 
 class Subscriber extends Component
 {
@@ -48,8 +47,18 @@ class Subscriber extends Component
         $query->from('{{%mollie_subscriptions_payments}}');
         $query->select('SUM(amount) as amount');
         $query->where(Db::parseParam('status', 'paid', '='));
-        $query->andWhere(['between', 'paidAt', $firstDayOfYear, $lastDayOfYear ]);
+        $query->andWhere(['between', 'paidAt', $firstDayOfYear, $lastDayOfYear]);
         return $query->column()[0];
+    }
+
+    public function getSubscriberByUid($uid)
+    {
+        return SubscriberElement::findOne(['uid' => $uid]);
+    }
+
+    public function getAllSubscriptionsForSubscriber($subscriber) {
+        $subscriptions = MollieSubscriptions::$plugin->mollie->getSubscriptionsForUser($subscriber->customerId);
+        return $subscriptions;
     }
 
 }

@@ -35,4 +35,10 @@ class MollieSubscriptionsVariable
     {
         return MollieSubscriptions::$plugin->plans->getPlanById($id);
     }
+
+    public function getAllForUser($uid) {
+        $subscriber = MollieSubscriptions::$plugin->subscriber->getSubscriberByUid($uid);
+        $subscriptions = MollieSubscriptions::$plugin->subscriber->getAllSubscriptionsForSubscriber($subscriber);
+        return $subscriptions;
+    }
 }

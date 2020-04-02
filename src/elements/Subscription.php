@@ -45,6 +45,8 @@ class Subscription extends Element
 
     public $plan;
 
+    public $subscriptionId;
+
     public $subscriptionStatus;
 
     // Static Methods
@@ -251,6 +253,7 @@ class Subscription extends Element
                 ->update(SubscriptionRecord::tableName(), [
                     'email' => $this->email,
                     'subscriptionStatus' => $this->subscriptionStatus,
+                    'subscriptionId' => $this->subscriptionId,
                     'amount' => $this->amount,
                 ], ['id' => $this->id])
                 ->execute();

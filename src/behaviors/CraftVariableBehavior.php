@@ -25,4 +25,6 @@ class CraftVariableBehavior extends Behavior
         return $query;
     }
 
+
+
 }

@@ -58,6 +58,7 @@ class Install extends Migration
                     'email' => $this->string()->notNull(),
                     'subscriber' => $this->integer(),
                     'subscriptionStatus' => $this->string()->notNull(),
+                    'subscriptionId' => $this->string(30),
                     'amount' => $this->decimal("10,2")->notNull(),
                     'plan' => $this->integer()->notNull(),
                     'dateCreated' => $this->dateTime()->notNull(),
