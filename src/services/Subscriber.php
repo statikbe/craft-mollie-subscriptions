@@ -5,10 +5,13 @@ namespace statikbe\molliesubscriptions\services;
 
 use Craft;
 use craft\base\Component;
+use craft\db\Query;
+use craft\helpers\Db;
 use Mollie\Api\Resources\Customer;
 use statikbe\molliesubscriptions\elements\Subscriber as SubscriberElement;
 use statikbe\molliesubscriptions\elements\Subscription;
 use statikbe\molliesubscriptions\MollieSubscriptions;
+use statikbe\molliesubscriptions\records\SubscriptionPaymentRecord;
 
 class Subscriber extends Component
 {
@@ -38,8 +41,15 @@ class Subscriber extends Component
 
     public function getTotalByYear(SubscriberElement $subscriber)
     {
-        $subscriptions = Subscription::findAll(['subscriber' => $subscriber->id]);
-        dd($subscriptions);
+        $firstDayOfYear = date('Y-01-01');
+        $lastDayOfYear = date('Y-12-31');
+
+        $query = new Query();
+        $query->from('{{%mollie_subscriptions_payments}}');
+        $query->select('SUM(amount) as amount');
+        $query->where(Db::parseParam('status', 'paid', '='));
+        $query->andWhere(['between', 'paidAt', $firstDayOfYear, $lastDayOfYear ]);
+        return $query->column()[0];
     }
 
 }
