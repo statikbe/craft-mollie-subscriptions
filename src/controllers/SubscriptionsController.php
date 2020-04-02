@@ -151,7 +151,7 @@ class SubscriptionsController extends Controller
         $payment = MollieSubscriptions::getInstance()->payments->getPaymentById($id);
         $molliePayment = MollieSubscriptions::getInstance()->mollie->getPayment($id);
         $paymentElement = MollieSubscriptions::getInstance()->payments->updatePayment($payment, $molliePayment);
-        if ($paymentElement) {
+        if ($paymentElement && $molliePayment->metadata->createSubscription) {
             MollieSubscriptions::$plugin->mollie->createSubscription($paymentElement);
         }
         return;

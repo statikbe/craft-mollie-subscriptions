@@ -31,7 +31,7 @@ class Mollie extends Component
     {
         $response = $this->mollie->payments->create([
             "amount" => [
-                "value" => $plan->amount,
+                "value" => number_format((float) $subscription->amount, 2, '.', ''),
                 "currency" => $plan->currency
             ],
             "customerId" => $subscriber->customerId ,
@@ -44,9 +44,9 @@ class Mollie extends Component
             ]),
             "webhookUrl" => "{$this->baseUrl}mollie-subscriptions/subscriptions/webhook",
             "metadata" => [
-                "redirectUrl" => $redirect,
                 "plan" => $plan->id,
                 "customer" => $subscriber->id,
+                "createSubscription"  => $plan->times == 1  ? false : true
             ],
         ]);
 
@@ -72,7 +72,7 @@ class Mollie extends Component
         $customer = $this->getCustomer($subscriber->customerId);
         $data = [
             "amount" => [
-                "value" => $plan->amount,
+                "value" => $subscription->amount,
                 "currency" => $plan->currency
             ],
             "interval" => $plan->interval . ' ' . $plan->intervalType,
