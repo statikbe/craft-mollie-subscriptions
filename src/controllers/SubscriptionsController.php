@@ -10,13 +10,11 @@
 
 namespace statikbe\molliesubscriptions\controllers;
 
-use craft\commerce\models\Customer;
+use Craft;
 use craft\helpers\UrlHelper;
+use craft\web\Controller;
 use statikbe\molliesubscriptions\elements\Subscription;
 use statikbe\molliesubscriptions\MollieSubscriptions;
-
-use Craft;
-use craft\web\Controller;
 use yii\web\UnauthorizedHttpException;
 
 /**
@@ -41,7 +39,7 @@ use yii\web\UnauthorizedHttpException;
  */
 class SubscriptionsController extends Controller
 {
-    protected $allowAnonymous = ['subscribe', 'process', 'webhook'];
+    protected $allowAnonymous = ['subscribe', 'donate', 'process', 'webhook'];
 
     public function beforeAction($action)
     {
@@ -95,6 +93,40 @@ class SubscriptionsController extends Controller
         return $this->redirect($url);
     }
 
+    public function actionDonate()
+    {
+        $plan = Craft::$app->getRequest()->getValidatedBodyParam('plan');
+        $email = Craft::$app->getRequest()->getRequiredBodyParam('email');
+        $plan = MollieSubscriptions::$plugin->plans->getPlanById(Craft::$app->getRequest()->getValidatedBodyParam('plan'));
+        if (!$plan) {
+            throw new UnauthorizedHttpException('Plan not found');
+        }
+        $email = Craft::$app->getRequest()->getRequiredBodyParam('email');
+        $subscriber = MollieSubscriptions::$plugin->subscriber->getOrCreateSubscriberByEmail($email);
+
+        $amount = Craft::$app->getRequest()->getBodyParam('amount');
+
+        $subscription = new Subscription();
+        $subscription->email = $email;
+        $subscription->subscriber = $subscriber->id;
+        $subscription->plan = $plan->id;
+        $subscription->amount = $amount;
+        $subscription->subscriptionStatus = 'Pending first payment';
+        $subscription->fieldLayoutId = $plan->fieldLayout;
+
+        $subscription->setFieldValuesFromRequest('fields');
+
+        if (!$subscription->validate()) {
+            // return with errors here?
+        }
+
+        Craft::$app->getElements()->saveElement($subscription);
+
+        $redirect = Craft::$app->getRequest()->getValidatedBodyParam('redirect');
+        $url = MollieSubscriptions::$plugin->mollie->createFirstPayment($subscription, $subscriber, $plan, $redirect);
+        return $this->redirect($url);
+    }
+
     public function actionProcess()
     {
         $request = Craft::$app->getRequest();
@@ -119,7 +151,7 @@ class SubscriptionsController extends Controller
         $payment = MollieSubscriptions::getInstance()->payments->getPaymentById($id);
         $molliePayment = MollieSubscriptions::getInstance()->mollie->getPayment($id);
         $paymentElement = MollieSubscriptions::getInstance()->payments->updatePayment($payment, $molliePayment);
-        if($paymentElement) {
+        if ($paymentElement) {
             MollieSubscriptions::$plugin->mollie->createSubscription($paymentElement);
         }
         return;
