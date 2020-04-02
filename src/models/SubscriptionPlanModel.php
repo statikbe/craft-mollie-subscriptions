@@ -56,7 +56,7 @@ class SubscriptionPlanModel extends Model
     public function rules()
     {
         return [
-            [['title', 'handle', 'currency', 'description', 'interval', 'intervalType', 'amount'], 'required'],
+            [['title', 'handle', 'currency', 'description', 'interval', 'intervalType'], 'required'],
             [['title', 'handle', 'currency', 'description', 'times','interval', 'intervalType', 'amount'], 'safe'],
             ['handle', 'validateHandle'],
 //            ['interval', 'validateInterval'],

@@ -77,9 +77,8 @@
 
     {{ forms.textField({
         label: 'Price'|t('mollie-subscriptions'),
-        instructions: 'Price the subscribers will be charged.'|t('mollie-subscriptions'),
+        instructions: 'Price the subscribers will be charged. If you leave the price empty, you can have the use choose their own price when they subscribe'|t('mollie-subscriptions'),
         id: 'amount',
-        required: true,
         name: 'amount',
         value: plan is defined ? plan.amount : '',
         errors: errors is defined and errors.amount is defined ? errors.amount
