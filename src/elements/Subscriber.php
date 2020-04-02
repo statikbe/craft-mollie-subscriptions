@@ -10,17 +10,13 @@
 
 namespace statikbe\molliesubscriptions\elements;
 
-use craft\helpers\UrlHelper;
-use statikbe\molliesubscriptions\elements\db\SubscriberQuery;
-use statikbe\molliesubscriptions\elements\db\SubscriptionQuery;
-use statikbe\molliesubscriptions\MollieSubscriptions;
-
 use Craft;
 use craft\base\Element;
-use craft\elements\db\ElementQuery;
 use craft\elements\db\ElementQueryInterface;
+use craft\helpers\UrlHelper;
+use statikbe\molliesubscriptions\actions\ExportAllSubscribersAction;
+use statikbe\molliesubscriptions\elements\db\SubscriberQuery;
 use statikbe\molliesubscriptions\records\SubscriberRecord;
-use statikbe\molliesubscriptions\records\SubscriptionRecord;
 
 /**
  * Subscriber Element
@@ -128,6 +124,13 @@ class Subscriber extends Element
         return [
             'email' => Craft::t('mollie-subscriptions', 'Email'),
             'customerId' => Craft::t('mollie-subscriptions', 'Customer ID'),
+        ];
+    }
+
+    protected static function defineActions(string $source = null): array
+    {
+        return [
+            ExportAllSubscribersAction::class
         ];
     }
 
