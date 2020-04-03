@@ -16,6 +16,8 @@ class SubscriptionQuery extends ElementQuery
 
     public $subscriber;
 
+    public $subscriptionId;
+
     public function email($value)
     {
         $this->email = $value;
@@ -47,6 +49,13 @@ class SubscriptionQuery extends ElementQuery
         return $this;
     }
 
+    public function subscriptionId($value)
+    {
+        $this->subscriptionId = $value;
+        return $this;
+    }
+
+
     protected function statusCondition(string $status)
     {
         switch ($status) {
@@ -72,6 +81,7 @@ class SubscriptionQuery extends ElementQuery
             'mollie_subscriptions.plan',
             'mollie_subscriptions.subscriptionStatus',
             'mollie_subscriptions.subscriber',
+            'mollie_subscriptions.subscriptionId',
         ]);
 
         if ($this->email) {
@@ -88,6 +98,10 @@ class SubscriptionQuery extends ElementQuery
 
         if ($this->subscriber) {
             $this->subQuery->andWhere(Db::parseParam('mollie_subscriptions.subscriber', $this->subscriber));
+        }
+
+        if ($this->subscriptionId) {
+            $this->subQuery->andWhere(Db::parseParam('mollie_subscriptions.subscriptionId', $this->subscriptionId));
         }
 
         return parent::beforePrepare();

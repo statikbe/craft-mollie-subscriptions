@@ -94,10 +94,16 @@ class Mollie extends Component
 
     }
 
-    public function getSubscriptionsForUser($id)
+    public function getSubscriptionsForUser($customer)
     {
-        $customer = $this->getCustomer($id);
+        $customer = $this->getCustomer($customer);
         return $customer->subscriptions();
+    }
+
+    public function cancelSubscription($id, $customer)
+    {
+        $customer = $this->getCustomer($customer);
+        return $customer->cancelSubscription($id);
     }
 
     public function createCustomer($email)

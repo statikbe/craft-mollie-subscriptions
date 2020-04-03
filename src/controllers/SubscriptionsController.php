@@ -127,6 +127,19 @@ class SubscriptionsController extends Controller
         return $this->redirect($url);
     }
 
+    public function actionCancel()
+    {
+        $mollieId = Craft::$app->getRequest()->getRequiredBodyParam('id');
+        $customerId = Craft::$app->getRequest()->getRequiredBodyParam('customer');
+        $response = MollieSubscriptions::$plugin->mollie->cancelSubscription($mollieId, $customerId);
+        if($response && $response->status === 'canceled') {
+            $subscription = Subscription::findOne(['subscriptionId' => $mollieId]);
+            $subscription->subscriptionStatus = Subscription::STATUS_CANCELED;
+            Craft::$app->getElements()->saveElement($subscription);
+            $this->redirectToPostedUrl();
+        }
+    }
+
     public function actionProcess()
     {
         $request = Craft::$app->getRequest();

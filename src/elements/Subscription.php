@@ -32,6 +32,8 @@ class Subscription extends Element
     // Public Properties
     // =========================================================================
 
+    const STATUS_CANCELED = 'Canceled';
+
     /**
      * Some attribute
      *
