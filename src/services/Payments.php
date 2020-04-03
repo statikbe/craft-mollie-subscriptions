@@ -4,14 +4,12 @@ namespace statikbe\molliesubscriptions\services;
 
 use Craft;
 use craft\base\Component;
-use Mollie\Api\Resources\Customer;
 use statikbe\molliepayments\models\PaymentTransactionModel;
 use statikbe\molliepayments\records\PaymentTransactionRecord;
 use statikbe\molliesubscriptions\elements\Subscription;
-use statikbe\molliesubscriptions\models\SubscriberModel;
+use statikbe\molliesubscriptions\events\PaymentUpdateEvent;
 use statikbe\molliesubscriptions\models\SubscriptionPaymentModel;
 use statikbe\molliesubscriptions\MollieSubscriptions;
-use statikbe\molliesubscriptions\records\SubscriberRecord;
 use statikbe\molliesubscriptions\records\SubscriptionPaymentRecord;
 
 class Payments extends Component
@@ -49,6 +47,18 @@ class Payments extends Component
             return $subscription;
         }
     }
+
+
+    public function fireEventAfterTransactionUpdate($payment, $subscription, $status) {
+        $this->trigger(MollieSubscriptions::EVENT_AFTER_PAYMENT_UPDATE,
+            new PaymentUpdateEvent([
+                'subscription' => $subscription,
+                'payment' => $payment,
+                'status' => $status
+            ])
+        );
+    }
+
 
 
     public function getPaymentBySubscriptionId($id)

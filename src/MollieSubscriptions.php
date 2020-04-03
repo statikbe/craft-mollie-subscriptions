@@ -56,6 +56,20 @@ use yii\base\Event;
  */
 class MollieSubscriptions extends Plugin
 {
+    // Constants
+    // =========================================================================
+
+    /**
+     * @event TransactionUpdateEvent The event that is triggered after a payment transaction is updates.
+     */
+    const EVENT_AFTER_PAYMENT_UPDATE = 'afterPaymentUpdate';
+
+    /**
+     * @event beforePaymentSave The event that is triggered before saving a payment element for the first time.
+     */
+    const EVENT_BEFORE_SUBSCRIPTION_SAVE = 'beforeSubscriptionSave';
+
+
     // Static Properties
     // =========================================================================
 
