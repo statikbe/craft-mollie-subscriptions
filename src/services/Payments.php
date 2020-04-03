@@ -19,9 +19,11 @@ class Payments extends Component
         $record = new SubscriptionPaymentRecord();
         $record->id = $model->id;
         $record->subscription = $model->subscription;
+        $record->customerId = $model->customerId;
         $record->amount = $model->amount;
         $record->currency = $model->currency;
         $record->status = $model->status;
+        $record->paidAt = $model->paidAt;
         return $record->save();
     }
 

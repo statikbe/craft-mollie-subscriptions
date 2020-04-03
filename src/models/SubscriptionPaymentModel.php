@@ -40,7 +40,11 @@ class SubscriptionPaymentModel extends Model
 
     public $amount;
 
+    public $method;
+
     public $currency;
 
     public $data;
+
+    public $paidAt;
 }

@@ -14,6 +14,7 @@ use Craft;
 use craft\helpers\UrlHelper;
 use craft\web\Controller;
 use statikbe\molliesubscriptions\elements\Subscription;
+use statikbe\molliesubscriptions\models\SubscriptionPaymentModel;
 use statikbe\molliesubscriptions\MollieSubscriptions;
 use yii\web\UnauthorizedHttpException;
 
@@ -161,11 +162,28 @@ class SubscriptionsController extends Controller
     {
         $this->requirePostRequest();
         $id = Craft::$app->getRequest()->getRequiredParam('id');
-        $payment = MollieSubscriptions::getInstance()->payments->getPaymentById($id);
         $molliePayment = MollieSubscriptions::getInstance()->mollie->getPayment($id);
-        $paymentElement = MollieSubscriptions::getInstance()->payments->updatePayment($payment, $molliePayment);
-        if ($paymentElement && $molliePayment->metadata->createSubscription) {
-            MollieSubscriptions::$plugin->mollie->createSubscription($paymentElement);
+        $payment = MollieSubscriptions::getInstance()->payments->getPaymentById($id);
+
+        if($molliePayment->subscriptionId) {
+            $subscriptionElement = Subscription::findOne(['subscriptionId' => $molliePayment->subscriptionId]);
+            $subscriptionPayment = new SubscriptionPaymentModel();
+            $subscriptionPayment->id = $molliePayment->id;
+            $subscriptionPayment->subscription = $subscriptionElement->id;
+            $subscriptionPayment->customerId = $molliePayment->customerId;
+            $subscriptionPayment->amount = $molliePayment->amount->value;
+            $subscriptionPayment->currency = $molliePayment->amount->currency;
+            $subscriptionPayment->status = $molliePayment->status;
+            $subscriptionPayment->method = $molliePayment->method;
+            $subscriptionPayment->paidAt = $molliePayment->paidAt;
+
+            MollieSubscriptions::$plugin->payments->save($subscriptionPayment);
+
+        } else {
+            $paymentElement = MollieSubscriptions::getInstance()->payments->updatePayment($payment, $molliePayment);
+            if ($paymentElement && $molliePayment->metadata->createSubscription) {
+                MollieSubscriptions::$plugin->mollie->createSubscription($paymentElement);
+            }
         }
         return;
     }
