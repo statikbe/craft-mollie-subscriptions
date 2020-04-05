@@ -46,6 +46,7 @@ class Payments extends Component
             $subscription = Subscription::findOne(['id' => $paymentRecord->subscription]);
             $subscription->subscriptionStatus = $molliePayment->status;
             Craft::$app->getElements()->saveElement($subscription);
+            $this->fireEventAfterTransactionUpdate($paymentRecord, $subscription, $molliePayment->status);
             return $subscription;
         }
     }
