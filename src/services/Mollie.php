@@ -29,6 +29,12 @@ class Mollie extends Component
 
     public function createFirstPayment(Subscription $subscription, Subscriber $subscriber, SubscriptionPlanModel $plan, $redirect)
     {
+        if($plan->description) {
+            $description = Craft::$app->getView()->renderObjectTemplate($plan->description, $subscription);
+        } else {
+            $description = "Order #{$payment->id}";
+        }
+
         $response = $this->mollie->payments->create([
             "amount" => [
                 "value" => number_format((float)$subscription->amount, 2, '.', ''),
@@ -36,7 +42,7 @@ class Mollie extends Component
             ],
             "customerId" => $subscriber->customerId,
             "sequenceType" => "first",
-            "description" => $plan->description,
+            "description" => $description,
             "redirectUrl" => UrlHelper::url("{$this->baseUrl}mollie-subscriptions/subscriptions/process", [
                 "planUid" => $plan->uid,
                 "subscriptionUid" => $subscription->uid,
