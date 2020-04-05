@@ -5,7 +5,7 @@
 {% import "_includes/forms" as forms %}
 
 {% set fullPageForm = true %}
-{% set title = form.title is defined ? form.title : 'New subscription plan' %}
+{% set title = plan.title is defined ? plan.title : 'New subscription plan' %}
 {% set selectedSubnavItem = 'plans' %}
 
 {% set crumbs = [
