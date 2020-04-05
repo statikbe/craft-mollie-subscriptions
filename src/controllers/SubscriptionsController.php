@@ -178,7 +178,8 @@ class SubscriptionsController extends Controller
             $subscriptionPayment->paidAt = $molliePayment->paidAt;
 
             MollieSubscriptions::$plugin->payments->save($subscriptionPayment);
-
+            $subscriptionElement->subscriptionStatus = Subscription::STATUS_ACTIVE;
+            Craft::$app->getElements()->saveElement($subscriptionElement);
         } else {
             $paymentElement = MollieSubscriptions::getInstance()->payments->updatePayment($payment, $molliePayment);
             if ($paymentElement && $molliePayment->metadata->createSubscription) {

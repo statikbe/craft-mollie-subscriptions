@@ -29,16 +29,15 @@ use statikbe\molliesubscriptions\records\SubscriptionRecord;
  */
 class Subscription extends Element
 {
+    // Constants
+    // =========================================================================
+    const STATUS_CANCELED = 'Canceled';
+    const STATUS_PAID = 'Paid';
+    const STATUS_ACTIVE = 'Active';
+
+
     // Public Properties
     // =========================================================================
-
-    const STATUS_CANCELED = 'Canceled';
-
-    /**
-     * Some attribute
-     *
-     * @var string
-     */
     public $email;
 
     public $amount;
