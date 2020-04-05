@@ -24,9 +24,11 @@
         {% set plan = craft.subscriptions.getPlanById(id) %}
         <h2>{{ plan.title }}</h2>
         {% for subscription in subscriptions %}
-            <a href="{{ cpUrl('mollie-subscriptions/subscription/' ~ subscription.uid) }}" target="_blank">
-                {{ subscription.dateCreated|date('d/m/y') }} - {{ subscription.amount }} {{ plan.currency }}
-            </a>
+            <div>
+                <a href="{{ cpUrl('mollie-subscriptions/subscription/' ~ subscription.uid) }}" target="_blank">
+                    {{ subscription.dateCreated|date('d/m/y') }} - {{ subscription.amount }} {{ plan.currency }}
+                </a>
+            </div>
         {% endfor %}
         <hr>
     {% endfor %}
