@@ -129,7 +129,27 @@ class Install extends Migration
 
     protected function addForeignKeys()
     {
+        // Subscriptions to plans
+        $this->addForeignKey(
+            $this->db->getForeignKeyName(SubscriptionRecord::tableName(), 'plan'),
+            SubscriptionRecord::tableName(),
+            'plan',
+            SubscriptionPlanRecord::tableName(),
+            'id',
+            'CASCADE',
+            NULL
+        );
 
+        //Payments to subscriptions
+        $this->addForeignKey(
+            $this->db->getForeignKeyName(SubscriptionPaymentRecord::tableName(), 'subscription'),
+            SubscriptionPaymentRecord::tableName(),
+            'subscription',
+            SubscriptionRecord::tableName(),
+            'id',
+            'CASCADE',
+            NULL
+        );
     }
 
     protected function removeTables()
