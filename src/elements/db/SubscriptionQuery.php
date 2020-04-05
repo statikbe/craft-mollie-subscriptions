@@ -61,8 +61,10 @@ class SubscriptionQuery extends ElementQuery
         switch ($status) {
             case 'pending':
                 return ['subscriptiontStatus' => 'pending'];
-            case 'paid':
-                return ['subscriptiontStatus' => 'paid'];
+            case 'Paid':
+                return ['subscriptiontStatus' => 'Paid'];
+            case 'Active':
+                return ['subscriptiontStatus' => 'Active'];
             case 'expired':
                 return ['subscriptiontStatus' => 'expired'];
             default:
