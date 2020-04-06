@@ -75,6 +75,13 @@ class Mollie extends Component
     {
         /** @var Customer $customer */
         $plan = MollieSubscriptions::$plugin->plans->getPlanById($subscription->plan);
+
+        if($plan->description) {
+            $description = Craft::$app->getView()->renderObjectTemplate($plan->description, $subscription);
+        } else {
+            $description = "Order #{$payment->id}";
+        }
+
         $subscriber = Subscriber::findOne(['id' => $subscription->subscriber]);
         $customer = $this->getCustomer($subscriber->customerId);
         $data = [
@@ -83,7 +90,7 @@ class Mollie extends Component
                 "currency" => $plan->currency
             ],
             "interval" => $plan->interval . ' ' . $plan->intervalType,
-            "description" => $plan->description,
+            "description" => $description,
             "webhookUrl" => "{$this->baseUrl}mollie-subscriptions/subscriptions/webhook"
         ];
 
