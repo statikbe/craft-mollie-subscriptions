@@ -12,8 +12,6 @@ namespace statikbe\molliesubscriptions\variables;
 
 use statikbe\molliesubscriptions\MollieSubscriptions;
 
-use Craft;
-
 /**
  * Mollie Subscriptions Variable
  *
@@ -36,9 +34,15 @@ class MollieSubscriptionsVariable
         return MollieSubscriptions::$plugin->plans->getPlanById($id);
     }
 
-    public function getAllForUser($uid) {
+    public function getAllForUser($uid)
+    {
         $subscriber = MollieSubscriptions::$plugin->subscriber->getSubscriberByUid($uid);
         $subscriptions = MollieSubscriptions::$plugin->subscriber->getAllSubscriptionsForSubscriber($subscriber);
         return $subscriptions;
+    }
+
+    public function parseDescription($string, $element)
+    {
+        return \Craft::$app->view->renderObjectTemplate($string, $element);
     }
 }
