@@ -46,7 +46,8 @@ class Subscriber extends Component
         $query = new Query();
         $query->from('{{%mollie_subscriptions_payments}}');
         $query->select('SUM(amount) as amount');
-        $query->where(Db::parseParam('status', 'paid', '='));
+        $query->where(['=', 'status', 'paid']);
+        $query->andWhere(['=', 'customerId', $subscriber->customerId]);
         $query->andWhere(['between', 'paidAt', $firstDayOfYear, $lastDayOfYear]);
         return $query->column()[0];
     }
