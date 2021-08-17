@@ -155,7 +155,7 @@ class Subscription extends Element
         return [
             'email' => Craft::t('mollie-subscriptions', 'Email'),
             'amount' => Craft::t('mollie-subscriptions', 'Amount'),
-            'status' => Craft::t('mollie-subscriptions', 'Status'),
+            'subscriptionStatus' => Craft::t('mollie-subscriptions', 'Status'),
             'dateCreated' => Craft::t('mollie-subscriptions', 'Date Created'),
         ];
     }
@@ -197,6 +197,7 @@ class Subscription extends Element
     {
         return [
             'pending' => ['label' => Craft::t('mollie-subscriptions', 'Pending'), 'color' => 'orange'],
+            'Active' => ['label' => Craft::t('mollie-subscriptions', 'Active'), 'color' => 'green'],
             'paid' => ['label' => Craft::t('mollie-subscriptions', 'Paid'), 'color' => 'green'],
             'expired' => ['label' => Craft::t('mollie-subscriptions', 'Expired'), 'color' => 'red'],
             'canceled' => ['label' => Craft::t('mollie-subscriptions', 'Canceled'), 'color' => 'red'],
