@@ -67,7 +67,7 @@ class Subscriber extends Element
      */
     public static function hasContent(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -97,7 +97,7 @@ class Subscriber extends Element
 
     public function getTotalForThisYear()
     {
-       return MollieSubscriptions::$plugin->subscriber->getTotalByYear($this);
+        return MollieSubscriptions::$plugin->subscriber->getTotalByYear($this);
     }
 
     /**
@@ -149,12 +149,12 @@ class Subscriber extends Element
     }
 
 
-    protected static function defineActions(string $source = null): array
-    {
-        return [
-            ExportAllSubscribersAction::class
-        ];
-    }
+//    protected static function defineActions(string $source = null): array
+//    {
+//        return [
+//            ExportAllSubscribersAction::class
+//        ];
+//    }
 
     /**
      * @return string|null

@@ -188,6 +188,20 @@ class Subscription extends Element
         return $this->subscriptionStatus;
     }
 
+    public static function hasStatuses(): bool
+    {
+        return true;
+    }
+
+    public static function statuses(): array
+    {
+        return [
+            'pending' => ['label' => Craft::t('mollie-subscriptions', 'Pending'), 'color' => 'orange'],
+            'paid' => ['label' => Craft::t('mollie-subscriptions', 'Paid'), 'color' => 'green'],
+            'expired' => ['label' => Craft::t('mollie-subscriptions', 'Expired'), 'color' => 'red'],
+            'canceled' => ['label' => Craft::t('mollie-subscriptions', 'Canceled'), 'color' => 'red'],
+        ];
+    }
 
     // Indexes, etc.
     // -------------------------------------------------------------------------

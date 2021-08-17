@@ -12,6 +12,7 @@ namespace statikbe\molliesubscriptions;
 
 use craft\helpers\UrlHelper;
 use statikbe\molliesubscriptions\behaviors\CraftVariableBehavior;
+use statikbe\molliesubscriptions\elements\Subscriber as SubscriberElement;
 use statikbe\molliesubscriptions\models\Settings;
 use statikbe\molliesubscriptions\services\Currency;
 use statikbe\molliesubscriptions\services\Mollie;
@@ -150,6 +151,7 @@ class MollieSubscriptions extends Plugin
             Elements::EVENT_REGISTER_ELEMENT_TYPES,
             function (RegisterComponentTypesEvent $event) {
                 $event->types[] = SubscriptionElement::class;
+                $event->types[] = SubscriberElement::class;
             }
         );
 
@@ -195,12 +197,13 @@ class MollieSubscriptions extends Plugin
             'url' => 'mollie-subscriptions',
         ];
 
-        if (Craft::$app->getUser()->getIsAdmin() && Craft::$app->getConfig()->getGeneral()->allowAdminChanges) {
-            $subNavs['subscribers'] = [
-                'label' => 'Subscribers',
-                'url' => 'mollie-subscriptions/subscribers',
-            ];
-        }
+//        TODO: dit overzicht toont niets! Na te kijken!
+//        if (Craft::$app->getUser()->getIsAdmin() && Craft::$app->getConfig()->getGeneral()->allowAdminChanges) {
+//            $subNavs['subscribers'] = [
+//                'label' => 'Subscribers',
+//                'url' => 'mollie-subscriptions/subscribers',
+//            ];
+//        }
         if (Craft::$app->getUser()->getIsAdmin() && Craft::$app->getConfig()->getGeneral()->allowAdminChanges) {
             $subNavs['plans'] = [
                 'label' => 'Plans',
@@ -213,7 +216,7 @@ class MollieSubscriptions extends Plugin
                 'url' => 'mollie-subscriptions/settings',
             ];
         }
-        
+
         $navItem = array_merge($navItem, [
             'subnav' => $subNavs,
         ]);
