@@ -23,14 +23,35 @@
     {% for id, subscriptions in subscriptionsByPlan %}
         {% set plan = craft.subscriptions.getPlanById(id) %}
         <h2>{{ plan.title }}</h2>
-        {% for subscription in subscriptions %}
-            <div>
-                <a href="{{ cpUrl('mollie-subscriptions/subscription/' ~ subscription.uid) }}" target="_blank">
-                    {{ subscription.dateCreated|date('d/m/y') }} - {{ subscription.amount }} {{ plan.currency }}
-                </a>
-            </div>
-        {% endfor %}
-        <hr>
+        <table class="data fullwidth collapsible">
+            <tbody>
+            <tr>
+                <td><strong>Status</strong></td>
+                <td><strong>Date</strong></td>
+                <td><strong>Amount</strong></td>
+                <td><strong>Email</strong></td>
+            </tr>
+            {% for subscription in subscriptions %}
+                <tr>
+                    <td data-title="Status">
+                        {% set subscriptionStatus = craft.subscriptions.getStatusDetails(subscription.status) %}
+                        <span class="status {{ subscriptionStatus.class }}"></span>
+                        {{ subscriptionStatus.label }}
+                    </td>
+                    <td data-title="Date">{{ subscription.dateCreated|date('d/m/Y') }}</td>
+                    <td data-title="Amount">
+                        <a href="{{ cpUrl('mollie-subscriptions/subscription/' ~ subscription.uid) }}" target="_blank">
+                            {{ subscription.amount }} {{ plan.currency }}
+                        </a>
+                    </td>
+                    <td data-title="Email">{{ subscription.email }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        {% if not loop.last %}
+            <hr>
+        {% endif %}
     {% endfor %}
 {% endblock %}
 
@@ -41,7 +62,8 @@
                 <label id="slug-label" for="slug">{{ "Email"|t("mollie-subscription") }}</label>
             </div>
             <div class="input ltr">
-                <input class="text fullwidth" disabled type="text" value="{{ element.email }}" autocomplete="off" autocorrect="off" autocapitalize="off" placeholder="Enter slug">
+                <input class="text fullwidth" disabled type="text" value="{{ element.email }}" autocomplete="off"
+                       autocorrect="off" autocapitalize="off" placeholder="Enter slug">
             </div>
         </div>
     </div>

@@ -11,7 +11,7 @@ use Craft;
 use craft\base\ElementAction;
 use craft\helpers\Json;
 
-class ExportAllSubscribersAction extends ElementAction
+class ExportAllSubscriptionsAction extends ElementAction
 {
     // Public Methods
     // =========================================================================
@@ -62,7 +62,7 @@ EOT;
             [
                 Craft::$app->config->general->csrfTokenName,
                 Craft::$app->request->getCsrfToken(),
-                'mollie-subscriptions/subscribers/export-all'
+                'mollie-subscriptions/subscriptions/export-all'
             ],
             $js
         );

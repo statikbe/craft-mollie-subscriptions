@@ -10,6 +10,7 @@
 
 namespace statikbe\molliesubscriptions\variables;
 
+use Craft;
 use statikbe\molliesubscriptions\MollieSubscriptions;
 
 /**
@@ -44,5 +45,29 @@ class MollieSubscriptionsVariable
     public function parseDescription($string, $element)
     {
         return \Craft::$app->view->renderObjectTemplate($string, $element);
+    }
+
+    public static function getStatusDetails($status)
+    {
+        switch ($status) {
+            case 'pending':
+                return ['label' => Craft::t('mollie-subscriptions', 'Pending'), 'color' => 'orange', 'class' => 'pending'];
+                break;
+            case 'Active':
+                return ['label' => Craft::t('mollie-subscriptions', 'Active'), 'color' => 'green', 'class' => 'active'];
+                break;
+            case 'paid':
+                return ['label' => Craft::t('mollie-subscriptions', 'Paid'), 'color' => 'green', 'class' => 'active'];
+                break;
+            case 'expired':
+                return ['label' => Craft::t('mollie-subscriptions', 'Expired'), 'color' => 'red', 'class' => 'expired'];
+                break;
+            case 'canceled':
+                return ['label' => Craft::t('mollie-subscriptions', 'Canceled'), 'color' => 'red', 'class' => 'expired'];
+                break;
+            default:
+                return ['label' => Craft::t('mollie-subscriptions', 'Unknown'), 'color' => 'none', 'class' => 'disabled'];
+
+        }
     }
 }

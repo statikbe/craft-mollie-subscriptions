@@ -10,27 +10,18 @@
 
 namespace statikbe\molliesubscriptions\models;
 
-use craft\validators\HandleValidator;
-use statikbe\molliesubscriptions\MollieSubscriptions;
-
 use Craft;
 use craft\base\Model;
+use craft\behaviors\FieldLayoutBehavior;
+use craft\db\Table;
+use craft\helpers\Db;
+use craft\helpers\StringHelper;
+use craft\validators\HandleValidator;
+use statikbe\molliesubscriptions\elements\Subscription;
+use statikbe\molliesubscriptions\MollieSubscriptions;
 
-/**
- * MollieSubscriptionsModel Model
- *
- * Models are containers for data. Just about every time information is passed
- * between services, controllers, and templates in Craft, it’s passed via a model.
- *
- * https://craftcms.com/docs/plugins/models
- *
- * @author    Statik
- * @package   MollieSubscriptions
- * @since     1.0.0
- */
 class SubscriptionPlanModel extends Model
 {
-
     public $title;
 
     public $id;
@@ -51,7 +42,19 @@ class SubscriptionPlanModel extends Model
 
     public $fieldLayout;
 
+    public $fieldLayoutId;
+
     public $uid;
+
+    public function behaviors()
+    {
+        $behaviors = parent::behaviors();
+        $behaviors['fieldLayout'] = [
+            'class' => FieldLayoutBehavior::class,
+            'elementType' => Subscription::class,
+        ];
+        return $behaviors;
+    }
 
     public function rules()
     {
@@ -65,6 +68,7 @@ class SubscriptionPlanModel extends Model
 
     public function validateInterval()
     {
+        // TODO
         dd($this);
     }
 
@@ -77,6 +81,31 @@ class SubscriptionPlanModel extends Model
             $this->addError('handle', Craft::t('mollie-subscriptions', 'Handle "{handle}" is already in use', ['handle' => $this->handle]));
 
         }
+    }
 
+    public function getConfig()
+    {
+        $config = [
+            'title' => $this->title,
+            'handle' => $this->handle,
+            'currency' => $this->currency,
+            'description' => $this->description,
+            'intervalType' => $this->intervalType,
+            'interval' => $this->interval,
+            'times' => $this->times,
+        ];
+
+        $fieldLayout = $this->getFieldLayout();
+
+        if ($fieldLayoutConfig = $fieldLayout->getConfig()) {
+            if (!$fieldLayout->uid) {
+                $fieldLayout->uid = $fieldLayout->id ? Db::uidById(Table::FIELDLAYOUTS, $fieldLayout->id) : StringHelper::UUID();
+            }
+            $config['fieldLayouts'] = [
+                $fieldLayout->uid => $fieldLayoutConfig,
+            ];
+        }
+
+        return $config;
     }
 }

@@ -24,15 +24,14 @@ class Mollie extends Component
         $this->mollie = new MollieApiClient();
         $this->mollie->setApiKey(Craft::parseEnv(MollieSubscriptions::$plugin->getSettings()->apiKey));
         $this->baseUrl = Craft::$app->getSites()->getCurrentSite()->getBaseUrl();
-
     }
 
-    public function createFirstPayment(Subscription $subscription, Subscriber $subscriber, SubscriptionPlanModel $plan, $redirect)
+    public function createFirstPayment(Subscription $subscription, Subscriber $subscriber, $plan, $redirect)
     {
         if($plan->description) {
             $description = Craft::$app->getView()->renderObjectTemplate($plan->description, $subscription);
         } else {
-            $description = "Order #{$payment->id}";
+            $description = "Order #{$subscription->id}";
         }
 
         $response = $this->mollie->payments->create([
@@ -79,7 +78,7 @@ class Mollie extends Component
         if($plan->description) {
             $description = Craft::$app->getView()->renderObjectTemplate($plan->description, $subscription);
         } else {
-            $description = "Order #{$payment->id}";
+            $description = "Order #{$subscription->id}";
         }
 
         $subscriber = Subscriber::findOne(['id' => $subscription->subscriber]);

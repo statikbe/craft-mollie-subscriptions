@@ -120,6 +120,20 @@ class Subscriber extends Element
         return $sources;
     }
 
+    protected static function defineSortOptions(): array
+    {
+        return [
+            'email' => Craft::t('app', 'E-mail address'),
+            'dateCreated' => Craft::t('app', 'Date created'),
+        ];
+    }
+
+
+    protected static function defineSearchableAttributes(): array
+    {
+        return ['email', 'customerId'];
+    }
+
     public function getUiLabel(): string
     {
         return $this->email;
@@ -130,7 +144,7 @@ class Subscriber extends Element
         return [
             'email' => Craft::t('mollie-subscriptions', 'Email'),
             'customerId' => Craft::t('mollie-subscriptions', 'Customer ID'),
-            'totalForThisYear' => Craft::t('mollie-subscriptions', 'Total amount spent this year')
+            'totalForThisYear' => Craft::t('mollie-subscriptions', 'Total this year')
         ];
     }
 
@@ -149,12 +163,12 @@ class Subscriber extends Element
     }
 
 
-//    protected static function defineActions(string $source = null): array
-//    {
-//        return [
-//            ExportAllSubscribersAction::class
-//        ];
-//    }
+    protected static function defineActions(string $source = null): array
+    {
+        return [
+            ExportAllSubscribersAction::class
+        ];
+    }
 
     /**
      * @return string|null

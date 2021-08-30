@@ -4,14 +4,13 @@ namespace statikbe\molliesubscriptions\controllers;
 
 use Craft;
 use craft\web\Controller;
-use statikbe\molliepayments\MolliePayments;
 use statikbe\molliesubscriptions\MollieSubscriptions;
 
 class SettingsController extends Controller
 {
     public function actionIndex()
     {
-        $settings = MollieSubscriptions::$plugin->getSettings();
+        $settings = MollieSubscriptions::getInstance()->getSettings();
         return $this->renderTemplate('mollie-subscriptions/_settings.twig', ['settings' => $settings]);
     }
 
@@ -22,15 +21,15 @@ class SettingsController extends Controller
         $params = Craft::$app->getRequest()->getBodyParams();
         $data = $params['settings'];
 
-        $settings = MollieSubscriptions::$plugin->getSettings();
-        $settings->apiKey = $data['apiKey'];
+        $settings = MollieSubscriptions::getInstance()->getSettings();
+        $settings->apiKey = $data['apiKey'] ?? $settings->orderReferenceFormat;
 
         if (!$settings->validate()) {
             Craft::$app->getSession()->setError(Craft::t('mollie-subscriptions', 'Couldn’t save settings.'));
             return $this->renderTemplate('mollie-subscriptions/settings', compact('settings'));
         }
 
-        $pluginSettingsSaved = Craft::$app->getPlugins()->savePluginSettings(MollieSubscriptions::$plugin, $settings->toArray());
+        $pluginSettingsSaved = Craft::$app->getPlugins()->savePluginSettings(MollieSubscriptions::getInstance(), $settings->toArray());
 
         if (!$pluginSettingsSaved) {
             Craft::$app->getSession()->setError(Craft::t('mollie-subscriptions', 'Couldn’t save settings.'));
