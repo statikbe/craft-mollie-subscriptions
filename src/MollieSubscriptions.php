@@ -10,13 +10,15 @@
 
 namespace statikbe\molliesubscriptions;
 
+use craft\events\RebuildConfigEvent;
 use craft\helpers\UrlHelper;
+use craft\services\ProjectConfig;
 use statikbe\molliesubscriptions\behaviors\CraftVariableBehavior;
 use statikbe\molliesubscriptions\elements\Subscriber as SubscriberElement;
 use statikbe\molliesubscriptions\models\Settings;
 use statikbe\molliesubscriptions\services\Currency;
+use statikbe\molliesubscriptions\services\Export;
 use statikbe\molliesubscriptions\services\Mollie;
-use statikbe\molliesubscriptions\services\Payment;
 use statikbe\molliesubscriptions\services\Payments;
 use statikbe\molliesubscriptions\services\Plans;
 use statikbe\molliesubscriptions\services\Subscriber;
@@ -25,8 +27,6 @@ use statikbe\molliesubscriptions\elements\Subscription as SubscriptionElement;
 
 use Craft;
 use craft\base\Plugin;
-use craft\services\Plugins;
-use craft\events\PluginEvent;
 use craft\web\UrlManager;
 use craft\services\Elements;
 use craft\web\twig\variables\CraftVariable;
@@ -69,6 +69,8 @@ class MollieSubscriptions extends Plugin
      * @event beforePaymentSave The event that is triggered before saving a payment element for the first time.
      */
     const EVENT_BEFORE_SUBSCRIPTION_SAVE = 'beforeSubscriptionSave';
+
+    const CONFIG_PATH = 'mollieSubscriptions';
 
 
     // Static Properties
@@ -118,7 +120,17 @@ class MollieSubscriptions extends Plugin
             'plans' => Plans::class,
             'subscriber' => Subscriber::class,
             'payments' => Payments::class,
+            'export' => Export::class,
         ]);
+
+        Craft::$app->projectConfig
+            ->onAdd(self::CONFIG_PATH . '.{uid}', [$this->plans, 'handleAddPlan'])
+            ->onUpdate(self::CONFIG_PATH . '.{uid}', [$this->plans, 'handleAddPlan'])
+            ->onRemove(self::CONFIG_PATH . '.{uid}', [$this->plans, 'handleDeletePlan']);
+
+        Event::on(ProjectConfig::class, ProjectConfig::EVENT_REBUILD, function (RebuildConfigEvent $event) {
+            $event->config[self::CONFIG_PATH] = $this->plans->rebuildProjectConfig();
+        });
 
         // Register our CP routes
         Event::on(
@@ -156,34 +168,14 @@ class MollieSubscriptions extends Plugin
         );
 
         // Register our variables
-        Event::on(
-            CraftVariable::class,
-            CraftVariable::EVENT_INIT,
-            function (Event $event) {
-                /** @var CraftVariable $variable */
-                $variable = $event->sender;
-                $variable->set('subscriptions', MollieSubscriptionsVariable::class);
-            }
-        );
-
-        Event::on(CraftVariable::class, CraftVariable::EVENT_INIT, function(Event $e) {
+        Event::on(CraftVariable::class, CraftVariable::EVENT_INIT, function (Event $event) {
             /** @var CraftVariable $variable */
-            $variable = $e->sender;
+            $variable = $event->sender;
+            $variable->set('subscriptions', MollieSubscriptionsVariable::class);
             $variable->attachBehaviors([
                 CraftVariableBehavior::class,
             ]);
         });
-
-        // Do something after we're installed
-        Event::on(
-            Plugins::class,
-            Plugins::EVENT_AFTER_INSTALL_PLUGIN,
-            function (PluginEvent $event) {
-                if ($event->plugin === $this) {
-                    // We were just installed
-                }
-            }
-        );
     }
 
     public function getCpNavItem()
@@ -196,14 +188,11 @@ class MollieSubscriptions extends Plugin
             'label' => 'Subscriptions',
             'url' => 'mollie-subscriptions',
         ];
+        $subNavs['subscribers'] = [
+            'label' => 'Subscribers',
+            'url' => 'mollie-subscriptions/subscribers',
+        ];
 
-//        TODO: dit overzicht toont niets! Na te kijken!
-//        if (Craft::$app->getUser()->getIsAdmin() && Craft::$app->getConfig()->getGeneral()->allowAdminChanges) {
-//            $subNavs['subscribers'] = [
-//                'label' => 'Subscribers',
-//                'url' => 'mollie-subscriptions/subscribers',
-//            ];
-//        }
         if (Craft::$app->getUser()->getIsAdmin() && Craft::$app->getConfig()->getGeneral()->allowAdminChanges) {
             $subNavs['plans'] = [
                 'label' => 'Plans',

@@ -4,8 +4,6 @@ namespace statikbe\molliesubscriptions\services;
 
 use Craft;
 use craft\base\Component;
-use statikbe\molliepayments\models\PaymentTransactionModel;
-use statikbe\molliepayments\records\PaymentTransactionRecord;
 use statikbe\molliesubscriptions\elements\Subscription;
 use statikbe\molliesubscriptions\events\PaymentUpdateEvent;
 use statikbe\molliesubscriptions\models\SubscriptionPaymentModel;
@@ -14,6 +12,15 @@ use statikbe\molliesubscriptions\records\SubscriptionPaymentRecord;
 
 class Payments extends Component
 {
+    public function saveElement($subscription)
+    {
+        if (Craft::$app->getElements()->saveElement($subscription)) {
+            return $subscription;
+        } else {
+            return false;
+        }
+    }
+
     public function save(SubscriptionPaymentModel $model)
     {
         $record = new SubscriptionPaymentRecord();
@@ -29,7 +36,6 @@ class Payments extends Component
 
     public function updatePayment(SubscriptionPaymentRecord $paymentRecord, $molliePayment)
     {
-
         $paymentRecord->status = $molliePayment->status;
         $paymentRecord->method = $molliePayment->method;
         if ($molliePayment->isPaid() == 'paid') {
@@ -52,7 +58,8 @@ class Payments extends Component
     }
 
 
-    public function fireEventAfterTransactionUpdate($payment, $subscription, $status) {
+    public function fireEventAfterTransactionUpdate($payment, $subscription, $status)
+    {
         $this->trigger(MollieSubscriptions::EVENT_AFTER_PAYMENT_UPDATE,
             new PaymentUpdateEvent([
                 'subscription' => $subscription,
@@ -61,8 +68,6 @@ class Payments extends Component
             ])
         );
     }
-
-
 
     public function getPaymentBySubscriptionId($id)
     {
@@ -76,7 +81,8 @@ class Payments extends Component
         return $paymentRecord;
     }
 
-    public function getAllPaymentsForSubscription($id) {
+    public function getAllPaymentsForSubscription($id)
+    {
         $paymentRecords = SubscriptionPaymentRecord::findAll(['subscription' => $id]);
         return $paymentRecords;
     }

@@ -13,6 +13,8 @@ namespace statikbe\molliesubscriptions\controllers;
 use craft\web\Controller;
 use statikbe\molliesubscriptions\elements\Subscriber;
 use statikbe\molliesubscriptions\elements\Subscription;
+use statikbe\molliesubscriptions\MollieSubscriptions;
+use statikbe\molliesubscriptions\services\Export;
 
 /**
  * Default Controller
@@ -56,8 +58,7 @@ class SubscribersController extends Controller
 
     public function actionExportAll()
     {
-
+        $subscribers = Subscriber::findAll();
+        return Export::instance()->subscribers($subscribers);
     }
-
-
 }

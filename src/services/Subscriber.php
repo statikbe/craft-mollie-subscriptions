@@ -20,7 +20,7 @@ class Subscriber extends Component
         $subscriber = SubscriberElement::findOne(['email' => $email]);
         if (!$subscriber) {
             /** @var Customer $customer */
-            $customer = MollieSubscriptions::$plugin->mollie->createCustomer($email);
+            $customer = MollieSubscriptions::getInstance()->mollie->createCustomer($email);
             $subscriber = new SubscriberElement();
             $subscriber->customerId = $customer->id;
             $subscriber->email = $customer->email;

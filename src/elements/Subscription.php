@@ -11,6 +11,7 @@
 namespace statikbe\molliesubscriptions\elements;
 
 use craft\helpers\UrlHelper;
+use statikbe\molliesubscriptions\actions\ExportAllSubscriptionsAction;
 use statikbe\molliesubscriptions\elements\db\SubscriptionQuery;
 use statikbe\molliesubscriptions\MollieSubscriptions;
 
@@ -150,6 +151,13 @@ class Subscription extends Element
         return $sources;
     }
 
+    protected static function defineActions(string $source = null): array
+    {
+        return [
+            ExportAllSubscriptionsAction::class,
+        ];
+    }
+
     protected static function defineTableAttributes(): array
     {
         return [
@@ -158,6 +166,18 @@ class Subscription extends Element
             'subscriptionStatus' => Craft::t('mollie-subscriptions', 'Status'),
             'dateCreated' => Craft::t('mollie-subscriptions', 'Date Created'),
         ];
+    }
+
+    protected static function defineSortOptions(): array
+    {
+        return [
+            'dateCreated' => \Craft::t('app', 'Date created'),
+        ];
+    }
+
+    protected static function defineSearchableAttributes(): array
+    {
+        return ['email'];
     }
 
     // Public Methods
@@ -286,4 +306,10 @@ class Subscription extends Element
         return true;
     }
 
+    public function afterDelete()
+    {
+        \Craft::$app->db->createCommand()
+            ->delete(SubscriptionRecord::tableName(), ['id' => $this->id])
+            ->execute();
+    }
 }
