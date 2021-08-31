@@ -97,7 +97,7 @@ class Subscriber extends Element
 
     public function getTotalForThisYear()
     {
-        return MollieSubscriptions::$plugin->subscriber->getTotalByYear($this);
+        return MollieSubscriptions::$plugin->subscriber->getTotalByYear($this) ?? '0';
     }
 
     /**
