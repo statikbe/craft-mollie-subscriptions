@@ -47,7 +47,7 @@ use yii\web\UnauthorizedHttpException;
  */
 class SubscriptionsController extends Controller
 {
-    protected $allowAnonymous = ['subscribe', 'donate', 'process', 'webhook'];
+    protected $allowAnonymous = ['subscribe', 'donate', 'process', 'webhook', 'cancel'];
 
     public function beforeAction($action)
     {
