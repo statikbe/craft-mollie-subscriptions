@@ -10,10 +10,6 @@
 
 namespace statikbe\molliesubscriptions\models;
 
-use craft\validators\HandleValidator;
-use statikbe\molliesubscriptions\MollieSubscriptions;
-
-use Craft;
 use craft\base\Model;
 
 /**
@@ -45,7 +41,7 @@ class SubscriberModel extends Model
     public $links;
 
 
-    public function rules()
+    public function rules(): array
     {
         return [
             [['email'], 'required'],

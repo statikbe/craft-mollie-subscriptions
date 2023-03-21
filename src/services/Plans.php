@@ -14,7 +14,7 @@ use yii\web\NotFoundHttpException;
 
 class Plans extends Component
 {
-    public function save(SubscriptionPlanModel $planModel)
+    public function save(SubscriptionPlanModel $planModel): bool
     {
         $planRecord = false;
         if (isset($planModel->id)) {
@@ -40,7 +40,11 @@ class Plans extends Component
         return $planRecord->save();
     }
 
-    public function handleAddPlan(ConfigEvent $event)
+    /**
+     * @throws \yii\base\Exception
+     * @throws \yii\db\Exception
+     */
+    public function handleAddPlan(ConfigEvent $event): ?bool
     {
         $planUid = $event->tokenMatches[0];
         $data = $event->newValue;
@@ -77,9 +81,13 @@ class Plans extends Component
 
         $planRecord->save();
         $transaction->commit();
+        return null;
     }
 
-    public function getPlanById($id)
+    /**
+     * @throws NotFoundHttpException
+     */
+    public function getPlanById($id): SubscriptionPlanModel
     {
         $plan = SubscriptionPlanRecord::findOne(['id' => $id]);
         if(!$plan) {
@@ -90,13 +98,17 @@ class Plans extends Component
         return $model;
     }
 
-    public function getAllPlans()
+    public function getAllPlans(): array
     {
         $plans = SubscriptionPlanRecord::find()->all();
         return $plans;
     }
 
-    public function getPlanByHandle($handle)
+    /**
+     * @throws \craft\errors\DeprecationException
+     * @throws NotFoundHttpException
+     */
+    public function getPlanByHandle($handle): SubscriptionPlanModel|SubscriptionPlanRecord|null
     {
         $plan = SubscriptionPlanRecord::findOne(['handle' => $handle]);
         if (!$plan) {
@@ -110,7 +122,11 @@ class Plans extends Component
         return $plan;
     }
 
-    public function delete($id) {
+    /**
+     * @throws \yii\base\InvalidConfigException
+     */
+    public function delete($id): bool
+    {
         $plan = SubscriptionPlanRecord::findOne(['id' => $id]);
         if ($plan) {
             Craft::$app->projectConfig->remove(MollieSubscriptions::CONFIG_PATH . '.' . $plan->uid, "Removing plan '{$plan->formName()}'");
@@ -118,6 +134,10 @@ class Plans extends Component
         return true;
     }
 
+    /**
+     * @throws \yii\db\StaleObjectException
+     * @throws \Throwable
+     */
     public function handleDeletePlan(ConfigEvent $event)
     {
         $record = SubscriptionPlanRecord::findOne([
@@ -132,7 +152,7 @@ class Plans extends Component
         };
     }
 
-    public function rebuildProjectConfig()
+    public function rebuildProjectConfig(): array
     {
         $forms = SubscriptionPlanRecord::find();
         $data = [];
@@ -147,7 +167,7 @@ class Plans extends Component
         return $data;
     }
 
-    private function getPlanRecord(string $uid)
+    private function getPlanRecord(string $uid): SubscriptionPlanRecord|array|\yii\db\ActiveRecord
     {
         $query = SubscriptionPlanRecord::find();
         $query->andWhere(['uid' => $uid]);

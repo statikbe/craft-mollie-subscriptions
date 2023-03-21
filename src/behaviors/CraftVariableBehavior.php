@@ -4,7 +4,6 @@ namespace statikbe\molliesubscriptions\behaviors;
 
 use Craft;
 use craft\elements\db\EntryQuery;
-use statikbe\molliesubscriptions\elements\db\SubscriptionQuery;
 use statikbe\molliesubscriptions\elements\Subscription;
 use yii\base\Behavior;
 
@@ -15,7 +14,7 @@ use yii\base\Behavior;
  */
 class CraftVariableBehavior extends Behavior
 {
-    public function subscriptions($criteria = null): SubscriptionQuery
+    public function subscriptions($criteria = null): \craft\elements\db\ElementQueryInterface
     {
         $query = Subscription::find();
         if ($criteria) {

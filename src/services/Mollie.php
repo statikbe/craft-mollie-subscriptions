@@ -10,7 +10,6 @@ use Mollie\Api\Resources\Customer;
 use statikbe\molliesubscriptions\elements\Subscriber;
 use statikbe\molliesubscriptions\elements\Subscription;
 use statikbe\molliesubscriptions\models\SubscriptionPaymentModel;
-use statikbe\molliesubscriptions\models\SubscriptionPlanModel;
 use statikbe\molliesubscriptions\MollieSubscriptions;
 
 class Mollie extends Component
@@ -19,13 +18,21 @@ class Mollie extends Component
 
     private $baseUrl;
 
-    public function init()
+    /**
+     * @throws \Mollie\Api\Exceptions\ApiException
+     * @throws \craft\errors\SiteNotFoundException
+     */
+    public function init(): void
     {
         $this->mollie = new MollieApiClient();
         $this->mollie->setApiKey(Craft::parseEnv(MollieSubscriptions::$plugin->getSettings()->apiKey));
         $this->baseUrl = Craft::$app->getSites()->getCurrentSite()->getBaseUrl();
     }
 
+    /**
+     * @throws \yii\base\Exception
+     * @throws \Throwable
+     */
     public function createFirstPayment(Subscription $subscription, Subscriber $subscriber, $plan, $redirect)
     {
         if($plan->description) {
@@ -70,6 +77,13 @@ class Mollie extends Component
     }
 
 
+    /**
+     * @throws \Throwable
+     * @throws \craft\errors\ElementNotFoundException
+     * @throws \Mollie\Api\Exceptions\ApiException
+     * @throws \yii\base\Exception
+     * @throws \yii\web\NotFoundHttpException
+     */
     public function createSubscription(Subscription $subscription)
     {
         /** @var Customer $customer */
@@ -106,19 +120,28 @@ class Mollie extends Component
 
     }
 
-    public function getSubscriptionsForUser($customer)
+    /**
+     * @throws \Mollie\Api\Exceptions\ApiException
+     */
+    public function getSubscriptionsForUser($customer): \Mollie\Api\Resources\SubscriptionCollection
     {
         $customer = $this->getCustomer($customer);
         return $customer->subscriptions();
     }
 
+    /**
+     * @throws \Mollie\Api\Exceptions\ApiException
+     */
     public function cancelSubscription($id, $customer)
     {
         $customer = $this->getCustomer($customer);
         return $customer->cancelSubscription($id);
     }
 
-    public function createCustomer($email)
+    /**
+     * @throws \Mollie\Api\Exceptions\ApiException
+     */
+    public function createCustomer($email): Customer
     {
         $customer = $this->mollie->customers->create([
             "email" => $email,
@@ -126,11 +149,17 @@ class Mollie extends Component
         return $customer;
     }
 
-    public function getCustomer($id)
+    /**
+     * @throws \Mollie\Api\Exceptions\ApiException
+     */
+    public function getCustomer($id): Customer
     {
         return $this->mollie->customers->get($id);
     }
 
+    /**
+     * @throws \Mollie\Api\Exceptions\ApiException
+     */
     public function getPayment($orderId)
     {
         return $this->mollie->payments->get($orderId);

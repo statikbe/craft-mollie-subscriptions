@@ -6,16 +6,19 @@ namespace statikbe\molliesubscriptions\services;
 use Craft;
 use craft\base\Component;
 use craft\db\Query;
-use craft\helpers\Db;
 use Mollie\Api\Resources\Customer;
 use statikbe\molliesubscriptions\elements\Subscriber as SubscriberElement;
 use statikbe\molliesubscriptions\MollieSubscriptions;
-use statikbe\molliesubscriptions\records\SubscriberRecord;
 
 class Subscriber extends Component
 {
 
-    public function getOrCreateSubscriberByEmail($email)
+    /**
+     * @throws \yii\base\Exception
+     * @throws \Throwable
+     * @throws \craft\errors\ElementNotFoundException
+     */
+    public function getOrCreateSubscriberByEmail($email): SubscriberElement|\craft\base\Element|array|null
     {
         $subscriber = SubscriberElement::findOne(['email' => $email]);
         if (!$subscriber) {
@@ -24,15 +27,15 @@ class Subscriber extends Component
             $subscriber = new SubscriberElement();
             $subscriber->customerId = $customer->id;
             $subscriber->email = $customer->email;
-            $subscriber->name = $customer->name;
-            $subscriber->locale = $customer->locale;
-            $subscriber->metadata = $customer->metadata;
+            $subscriber->name = $customer->name ?? '';
+            $subscriber->locale = $customer->locale ?? '';
+            $subscriber->metadata = $customer->metadata ?? '';
             $subscriber->links = $customer->_links;
 
-            if (Craft::$app->getUser()->getIdentity()) {
+            /*if (Craft::$app->getUser()->getIdentity()) {
                 $subscriber->userId = Craft::$app->getUser()->getIdentity()->id;
-                $subscriber->name = Craft::$app->getUser()->getIdentity()->fullName;
-            }
+                $subscriber->name = Craft::$app->getUser()->getIdentity()->fullName ?? '';
+            }*/
             Craft::$app->getElements()->saveElement($subscriber);
         }
         return $subscriber;
@@ -52,12 +55,16 @@ class Subscriber extends Component
         return $query->column()[0];
     }
 
-    public function getSubscriberByUid($uid)
+    public function getSubscriberByUid($uid): SubscriberElement|\craft\base\Element|array|null
     {
         return SubscriberElement::findOne(['uid' => $uid]);
     }
 
-    public function getAllSubscriptionsForSubscriber($subscriber) {
+    /**
+     * @throws \Mollie\Api\Exceptions\ApiException
+     */
+    public function getAllSubscriptionsForSubscriber($subscriber): \Mollie\Api\Resources\SubscriptionCollection
+    {
         $subscriptions = MollieSubscriptions::$plugin->mollie->getSubscriptionsForUser($subscriber->customerId);
         return $subscriptions;
     }

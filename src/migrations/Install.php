@@ -23,7 +23,7 @@ class Install extends Migration
 
     // Public Methods
     // =========================================================================
-    public function safeUp()
+    public function safeUp(): bool
     {
         $this->driver = Craft::$app->getConfig()->getDb()->driver;
         if ($this->createTables()) {
@@ -34,7 +34,7 @@ class Install extends Migration
         return true;
     }
 
-    public function safeDown()
+    public function safeDown(): bool
     {
         $this->driver = Craft::$app->getConfig()->getDb()->driver;
         $this->removeTables();
@@ -44,7 +44,7 @@ class Install extends Migration
     // Protected Methods
     // =========================================================================
 
-    protected function createTables()
+    protected function createTables(): bool
     {
         $tablesCreated = false;
         $tableSchema = Craft::$app->db->schema->getTableSchema(SubscriptionPlanRecord::tableName());

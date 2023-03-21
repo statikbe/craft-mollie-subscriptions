@@ -2,7 +2,7 @@
     "name": "statikbe/craft-mollie-subscriptions",
     "description": "Subscriptions through Mollie",
     "type": "craft-plugin",
-    "version": "1.2.3",
+    "version": "2.0.0",
     "keywords": [
         "craft",
         "cms",
@@ -18,7 +18,8 @@
     },
     "license": "MIT",
     "require": {
-        "craftcms/cms": "^3.4.0",
+        "php": "^8.0",
+        "craftcms/cms": "^4.0.0",
         "mollie/mollie-api-php": "^2.0"
     },
     "autoload": {
@@ -33,5 +34,11 @@
         "hasCpSection": true,
         "changelogUrl": "https://raw.githubusercontent.com/statikbe/craft-mollie-subscriptions/master/CHANGELOG.md",
         "class": "statikbe\\molliesubscriptions\\MollieSubscriptions"
+    },
+    "config": {
+        "allow-plugins": {
+            "yiisoft/yii2-composer": true,
+            "craftcms/plugin-installer": true
+        }
     }
 }

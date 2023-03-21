@@ -30,24 +30,34 @@ class MollieSubscriptionsVariable
     // Public Methods
     // =========================================================================
 
-    public function getPlanByid($id)
+    /**
+     * @throws \yii\web\NotFoundHttpException
+     */
+    public function getPlanByid($id): \statikbe\molliesubscriptions\models\SubscriptionPlanModel
     {
         return MollieSubscriptions::$plugin->plans->getPlanById($id);
     }
 
-    public function getAllForUser($uid)
+    /**
+     * @throws \Mollie\Api\Exceptions\ApiException
+     */
+    public function getAllForUser($uid): \Mollie\Api\Resources\SubscriptionCollection
     {
         $subscriber = MollieSubscriptions::$plugin->subscriber->getSubscriberByUid($uid);
         $subscriptions = MollieSubscriptions::$plugin->subscriber->getAllSubscriptionsForSubscriber($subscriber);
         return $subscriptions;
     }
 
-    public function parseDescription($string, $element)
+    /**
+     * @throws \yii\base\Exception
+     * @throws \Throwable
+     */
+    public function parseDescription($string, $element): string
     {
         return \Craft::$app->view->renderObjectTemplate($string, $element);
     }
 
-    public static function getStatusDetails($status)
+    public static function getStatusDetails($status): array
     {
         switch ($status) {
             case 'pending':

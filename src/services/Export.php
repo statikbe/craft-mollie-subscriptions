@@ -12,9 +12,9 @@ use yii\web\Response;
 
 class Export extends Component
 {
-    private $plans = [];
+    private $plans;
 
-    public function subscribers($subscribers, $format = 'csv')
+    public function subscribers($subscribers, $format = 'csv'): \craft\web\Response|\yii\console\Response
     {
         $results = [];
         $header = ['E-mail', 'Customer Id', 'Total this year'];
@@ -46,7 +46,7 @@ class Export extends Component
         }
 
         $filename = 'Export-Mollie-Subscribers.' . $format;
-        $path = Craft::$app->getPath()->getTempPath() . '/' . $filename;
+        $path = Craft::$app->getPath()->getTempPath() . 'Export.php/' . $filename;
         $mimeType = FileHelper::getMimeTypeByExtension($filename);
 
         $response = Craft::$app->getResponse();
@@ -56,7 +56,11 @@ class Export extends Component
         return $response;
     }
 
-    public function subscriptions($subscriptions, $format = 'csv')
+    /**
+     * @throws \yii\web\NotFoundHttpException
+     * @throws BadRequestHttpException
+     */
+    public function subscriptions($subscriptions, $format = 'csv'): \craft\web\Response|\yii\console\Response
     {
         $results = [];
         $header = ['E-mail', 'Plan', 'Amount', 'Currency', 'Status', 'Date'];
@@ -116,7 +120,7 @@ class Export extends Component
         }
 
         $filename = 'Export-Mollie-Subscriptions.' . $format;
-        $path = Craft::$app->getPath()->getTempPath() . '/' . $filename;
+        $path = Craft::$app->getPath()->getTempPath() . 'Export.php/' . $filename;
         $mimeType = FileHelper::getMimeTypeByExtension($filename);
 
         $response = Craft::$app->getResponse();

@@ -11,8 +11,6 @@
 namespace statikbe\molliesubscriptions\controllers;
 
 use craft\web\Controller;
-use statikbe\molliepayments\elements\Payment;
-use statikbe\molliepayments\MolliePayments;
 use statikbe\molliesubscriptions\elements\Subscription;
 use statikbe\molliesubscriptions\MollieSubscriptions;
 
@@ -40,18 +38,22 @@ class DefaultController extends Controller
 {
     // Public Methods
     // =========================================================================
+    protected int|bool|array $allowAnonymous = ['index', 'edit'];
 
     /**
      * Handle a request going to our plugin's index action URL,
      * e.g.: actions/mollie-subscriptions/default
      *
-     * @return mixed
+     * @return \yii\web\Response
      */
-    public function actionIndex()
+    public function actionIndex(): \yii\web\Response
     {
         return $this->renderTemplate('mollie-subscriptions/_elements/_subscriptions/_index.twig');
     }
 
+    /**
+     * @throws \yii\web\NotFoundHttpException
+     */
     public function actionEdit($uid)
     {
         $subscription = Subscription::findOne(['uid' => $uid]);

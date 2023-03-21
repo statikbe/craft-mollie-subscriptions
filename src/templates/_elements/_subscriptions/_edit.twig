@@ -12,7 +12,8 @@
 {% set title = "Subscriptions for "|t('mollie-subscription') ~ plan.title ~' - '~ element.email %}
 {% block header %}
     {{ block('pageTitle') }}
-    {{ block('contextMenu') }}
+{#    {{ block('contextMenu') }}#}
+    {{ block('actionButton') }}
 {% endblock %}
 {% set tabData = [] %}
 {% for tab in element.getFieldLayout().getTabs() %}
@@ -23,16 +24,26 @@
 
 {% set tabs = tabData %}
 
+{% hook 'cp.payments.edit' %}
+
 {% block content %}
-    {% set tabs = element.getFieldLayout().getTabs() %}
-    {% for tab in tabs %}
-        <div id="{{ tab.getHtmlId() }}" {% if not loop.first %} class="hidden"{% endif %}>
-            {% include "_includes/fields" with {
-                fields:  tab.getFields(),
-                element: element
-            } only %}
+    {% if element.getFieldLayout() %}
+
+        {% set form = element.getFieldLayout().createForm(element) %}
+        <div id="fields">
+            {{ form.render()|raw }}
         </div>
-    {% endfor %}
+    {% endif %}
+
+{#    {% set tabs = element.getFieldLayout().getTabs() %}#}
+{#    {% for tab in tabs %}#}
+{#        <div id="{{ tab.getHtmlId() }}" {% if not loop.first %} class="hidden"{% endif %}>#}
+{#            {% include "_includes/fields" with {#}
+{#                fields:  tab.getFields(),#}
+{#                element: element#}
+{#            } only %}#}
+{#        </div>#}
+{#    {% endfor %}#}
     <div id="tab-payments" class="{% if tabs|length %}hidden{% endif %}">
         {% include 'mollie-subscriptions/_elements/_subscriptions/_payments.twig' with {payments : payments } only %}
     </div>
@@ -51,3 +62,5 @@
         </div>
     </div>
 {% endblock %}
+
+{% hook 'cp.payments.edit.details' %}

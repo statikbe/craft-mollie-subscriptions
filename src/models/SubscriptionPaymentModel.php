@@ -10,10 +10,6 @@
 
 namespace statikbe\molliesubscriptions\models;
 
-use craft\validators\HandleValidator;
-use statikbe\molliesubscriptions\MollieSubscriptions;
-
-use Craft;
 use craft\base\Model;
 
 /**

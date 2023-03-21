@@ -14,59 +14,61 @@ class SubscriptionQuery extends ElementQuery
 
     public $email;
 
+    public $amount;
+
     public $subscriber;
 
     public $subscriptionId;
 
-    public function email($value)
+    public function email($value): SubscriptionQuery|static
     {
         $this->email = $value;
         return $this;
     }
 
-    public function status($value)
+    public function status($value): SubscriptionQuery
     {
-        $this->subscriptiontStatus = $value;
+        $this->subscriptionStatus = $value;
         return $this;
     }
 
 
-    public function subscriptiontStatus($value)
+    public function subscriptionStatus($value): SubscriptionQuery
     {
-        $this->subscriptiontStatus = $value;
+        $this->subscriptionStatus = $value;
         return $this;
     }
 
-    public function plan($value)
+    public function plan($value): SubscriptionQuery
     {
         $this->plan = $value;
         return $this;
     }
 
-    public function subscriber($value)
+    public function subscriber($value): SubscriptionQuery
     {
         $this->subscriber = $value;
         return $this;
     }
 
-    public function subscriptionId($value)
+    public function subscriptionId($value): SubscriptionQuery
     {
         $this->subscriptionId = $value;
         return $this;
     }
 
 
-    protected function statusCondition(string $status)
+    protected function statusCondition(string $status): mixed
     {
         switch ($status) {
             case 'pending':
-                return ['subscriptiontStatus' => 'pending'];
+                return ['subscriptionStatus' => 'pending'];
             case 'Paid':
-                return ['subscriptiontStatus' => 'Paid'];
+                return ['subscriptionStatus' => 'Paid'];
             case 'Active':
-                return ['subscriptiontStatus' => 'Active'];
+                return ['subscriptionStatus' => 'Active'];
             case 'expired':
-                return ['subscriptiontStatus' => 'expired'];
+                return ['subscriptionStatus' => 'expired'];
             default:
                 return parent::statusCondition($status);
         }
@@ -88,6 +90,10 @@ class SubscriptionQuery extends ElementQuery
 
         if ($this->email) {
             $this->subQuery->andWhere(Db::parseParam('mollie_subscriptions.email', $this->email));
+        }
+
+        if ($this->amount) {
+            $this->subQuery->andWhere(Db::parseParam('mollie_subscriptions.amount', $this->amount));
         }
 
         if ($this->plan) {

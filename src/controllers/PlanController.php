@@ -41,14 +41,17 @@ class PlanController extends Controller
 {
     // Public Methods
     // =========================================================================
-    public function actionIndex()
+
+    protected int|bool|array $allowAnonymous = ['index', 'edit', 'save', 'delete'];
+
+    public function actionIndex(): \yii\web\Response
     {
         return $this->renderTemplate('mollie-subscriptions/_plans/_index.twig', [
             'plans' => MollieSubscriptions::getInstance()->plans->getAllPlans()
         ]);
     }
 
-    public function actionEdit($planId = null)
+    public function actionEdit($planId = null): \yii\web\Response
     {
         $currencies = MollieSubscriptions::getInstance()->currency->getCurrencies();
         if (!$planId) {
@@ -63,7 +66,11 @@ class PlanController extends Controller
         }
     }
 
-    public function actionSave()
+    /**
+     * @throws \yii\web\NotFoundHttpException
+     * @throws \yii\web\BadRequestHttpException
+     */
+    public function actionSave(): ?\yii\web\Response
     {
         $data = Craft::$app->getRequest()->getBodyParam('data');
 
@@ -104,13 +111,21 @@ class PlanController extends Controller
                 'currencies' => MollieSubscriptions::getInstance()->currency->getCurrencies()
             ]);
         }
+
+        return null;
     }
 
-    public function actionDelete() {
+    /**
+     * @throws \yii\base\InvalidConfigException
+     * @throws \yii\web\BadRequestHttpException
+     */
+    public function actionDelete(): ?\yii\web\Response
+    {
         $id = Craft::$app->getRequest()->getRequiredBodyParam('id');
         if(MollieSubscriptions::getInstance()->plans->delete($id)) {
             $returnData['success'] = true;
             return $this->asJson($returnData);
         };
+        return null;
     }
 }

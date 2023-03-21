@@ -13,7 +13,6 @@ namespace statikbe\molliesubscriptions\controllers;
 use craft\web\Controller;
 use statikbe\molliesubscriptions\elements\Subscriber;
 use statikbe\molliesubscriptions\elements\Subscription;
-use statikbe\molliesubscriptions\MollieSubscriptions;
 use statikbe\molliesubscriptions\services\Export;
 
 /**
@@ -38,15 +37,15 @@ use statikbe\molliesubscriptions\services\Export;
  */
 class SubscribersController extends Controller
 {
-    protected $allowAnonymous = [];
+    protected int|bool|array $allowAnonymous = ['index', 'edit', 'export-all'];
 
     // Public Methods// =========================================================================
-    public function actionIndex()
+    public function actionIndex(): \yii\web\Response
     {
         return $this->renderTemplate('mollie-subscriptions/_elements/_subscribers/_index.twig');
     }
 
-    public function actionEdit($uid)
+    public function actionEdit($uid): void
     {
         $subscriber = Subscriber::findOne(['uid' => $uid]);
         $subscriptions = Subscription::findAll(['subscriber' => $subscriber->id]);
@@ -56,7 +55,10 @@ class SubscribersController extends Controller
         ]);
     }
 
-    public function actionExportAll()
+    /**
+     * @throws \yii\web\BadRequestHttpException
+     */
+    public function actionExportAll(): \craft\web\Response|\yii\console\Response
     {
         $subscribers = Subscriber::findAll();
         return Export::instance()->subscribers($subscribers);
