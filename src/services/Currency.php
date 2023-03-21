@@ -3,9 +3,6 @@
 namespace statikbe\molliesubscriptions\services;
 
 use craft\base\Component;
-use statikbe\molliepayments\models\PaymentFormModel;
-use statikbe\molliepayments\records\PaymentFormRecord;
-use statikbe\molliepayments\elements\Payment as PaymentElement;
 
 class Currency extends Component
 {
@@ -32,7 +29,8 @@ class Currency extends Component
         "ZAR" => ["name" => "South African rand", "short" => "ZAR", "symbol" => "R"],
     ];
 
-    public function getCurrencies() {
+    public function getCurrencies(): array
+    {
         return self::defaultCurrencies;
     }
 }

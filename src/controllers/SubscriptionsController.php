@@ -11,11 +11,9 @@
 namespace statikbe\molliesubscriptions\controllers;
 
 use Craft;
-use craft\base\Element;
 use craft\helpers\ConfigHelper;
 use craft\helpers\UrlHelper;
 use craft\web\Controller;
-use statikbe\molliesubscriptions\elements\Subscriber;
 use statikbe\molliesubscriptions\elements\Subscription;
 use statikbe\molliesubscriptions\models\SubscriptionPaymentModel;
 use statikbe\molliesubscriptions\MollieSubscriptions;
@@ -47,9 +45,16 @@ use yii\web\UnauthorizedHttpException;
  */
 class SubscriptionsController extends Controller
 {
-    protected $allowAnonymous = ['subscribe', 'donate', 'process', 'webhook', 'cancel'];
+    protected int|bool|array $allowAnonymous = ['subscribe', 'donate', 'process', 'webhook', 'cancel'];
 
-    public function beforeAction($action)
+    /**
+     * @throws \craft\web\ServiceUnavailableHttpException
+     * @throws InvalidConfigException
+     * @throws UnauthorizedHttpException
+     * @throws \yii\web\ForbiddenHttpException
+     * @throws \yii\web\BadRequestHttpException
+     */
+    public function beforeAction($action): bool
     {
         if ($action->id === 'webhook') {
             $this->enableCsrfValidation = false;
@@ -58,16 +63,24 @@ class SubscriptionsController extends Controller
         if (!ConfigHelper::localizedValue(MollieSubscriptions::getInstance()->getSettings()->apiKey)) {
             throw new InvalidConfigException("No Mollie API key set");
         }
+
         return parent::beforeAction($action);
     }
 
     // Public Methods// =========================================================================
-    public function actionIndex()
+    public function actionIndex(): \yii\web\Response
     {
         return $this->renderTemplate('mollie-subscriptions/_elements/_subscriptions/_index.twig');
     }
 
-    public function actionSubscribe()
+    /**
+     * @throws InvalidConfigException
+     * @throws \yii\base\Exception
+     * @throws UnauthorizedHttpException
+     * @throws \yii\web\BadRequestHttpException
+     * @throws \Throwable
+     */
+    public function actionSubscribe(): ?\yii\web\Response
     {
         $redirect = Craft::$app->request->getBodyParam('redirect');
         $redirect = Craft::$app->security->validateData($redirect);
@@ -104,9 +117,21 @@ class SubscriptionsController extends Controller
             $url = MollieSubscriptions::getInstance()->mollie->createFirstPayment($subscription, $subscriber, $plan, $redirect);
             return $this->redirect($url);
         }
+
+        return null;
     }
 
-    public function actionDonate()
+    /**
+     * @throws \craft\errors\ElementNotFoundException
+     * @throws InvalidConfigException
+     * @throws \yii\web\BadRequestHttpException
+     * @throws \Throwable
+     * @throws \yii\base\Exception
+     * @throws NotFoundHttpException
+     * @throws UnauthorizedHttpException
+     * @throws HttpException
+     */
+    public function actionDonate(): ?\yii\web\Response
     {
         $redirect = Craft::$app->request->getBodyParam('redirect');
         $redirect = Craft::$app->security->validateData($redirect);
@@ -116,6 +141,7 @@ class SubscriptionsController extends Controller
             throw new UnauthorizedHttpException('Plan not found');
         }
         $plan = MollieSubscriptions::getInstance()->plans->getPlanById($plan);
+
         if (!$plan) {
             throw new UnauthorizedHttpException('Plan not found');
         }
@@ -148,8 +174,15 @@ class SubscriptionsController extends Controller
             $url = MollieSubscriptions::getInstance()->mollie->createFirstPayment($subscription, $subscriber, $plan, $redirect);
             return $this->redirect($url);
         }
+        return null;
     }
 
+    /**
+     * @throws \Throwable
+     * @throws \craft\errors\ElementNotFoundException
+     * @throws \yii\base\Exception
+     * @throws \yii\web\BadRequestHttpException
+     */
     public function actionCancel()
     {
         $mollieId = Craft::$app->getRequest()->getRequiredBodyParam('id');
@@ -181,7 +214,13 @@ class SubscriptionsController extends Controller
         }
     }
 
-    public function actionWebhook()
+    /**
+     * @throws \Throwable
+     * @throws \craft\errors\ElementNotFoundException
+     * @throws \yii\base\Exception
+     * @throws \yii\web\BadRequestHttpException
+     */
+    public function actionWebhook(): void
     {
         $id = Craft::$app->getRequest()->getRequiredParam('id');
         $molliePayment = MollieSubscriptions::getInstance()->mollie->getPayment($id);
@@ -208,10 +247,13 @@ class SubscriptionsController extends Controller
                 MollieSubscriptions::$plugin->mollie->createSubscription($paymentElement);
             }
         }
-        return;
     }
 
-    public function actionExportAll()
+    /**
+     * @throws \yii\web\BadRequestHttpException
+     * @throws NotFoundHttpException
+     */
+    public function actionExportAll(): \craft\web\Response|\yii\console\Response
     {
         $subscriptions = Subscription::findAll();
         return Export::instance()->subscriptions($subscriptions);

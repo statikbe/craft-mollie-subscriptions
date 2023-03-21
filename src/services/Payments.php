@@ -12,7 +12,12 @@ use statikbe\molliesubscriptions\records\SubscriptionPaymentRecord;
 
 class Payments extends Component
 {
-    public function saveElement($subscription)
+    /**
+     * @throws \Throwable
+     * @throws \craft\errors\ElementNotFoundException
+     * @throws \yii\base\Exception
+     */
+    public function saveElement($subscription): Subscription|bool
     {
         if (Craft::$app->getElements()->saveElement($subscription)) {
             return $subscription;
@@ -21,7 +26,7 @@ class Payments extends Component
         }
     }
 
-    public function save(SubscriptionPaymentModel $model)
+    public function save($model): bool
     {
         $record = new SubscriptionPaymentRecord();
         $record->id = $model->id;
@@ -34,7 +39,12 @@ class Payments extends Component
         return $record->save();
     }
 
-    public function updatePayment(SubscriptionPaymentRecord $paymentRecord, $molliePayment)
+    /**
+     * @throws \yii\base\Exception
+     * @throws \Throwable
+     * @throws \craft\errors\ElementNotFoundException
+     */
+    public function updatePayment($paymentRecord, $molliePayment): Subscription|null
     {
         $paymentRecord->status = $molliePayment->status;
         $paymentRecord->method = $molliePayment->method;
@@ -55,6 +65,7 @@ class Payments extends Component
             $this->fireEventAfterTransactionUpdate($paymentRecord, $subscription, $molliePayment->status);
             return $subscription;
         }
+        return null;
     }
 
 
@@ -69,19 +80,19 @@ class Payments extends Component
         );
     }
 
-    public function getPaymentBySubscriptionId($id)
+    public function getPaymentBySubscriptionId($id): ?SubscriptionPaymentRecord
     {
         $paymentRecord = SubscriptionPaymentRecord::findOne(['subscription' => $id]);
         return $paymentRecord;
     }
 
-    public function getPaymentById($id)
+    public function getPaymentById($id): SubscriptionPaymentRecord|null
     {
         $paymentRecord = SubscriptionPaymentRecord::findOne(['id' => $id]);
         return $paymentRecord;
     }
 
-    public function getAllPaymentsForSubscription($id)
+    public function getAllPaymentsForSubscription($id): array
     {
         $paymentRecords = SubscriptionPaymentRecord::findAll(['subscription' => $id]);
         return $paymentRecords;

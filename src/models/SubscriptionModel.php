@@ -10,9 +10,6 @@
 
 namespace statikbe\molliesubscriptions\models;
 
-use statikbe\molliesubscriptions\MollieSubscriptions;
-
-use Craft;
 use craft\base\Model;
 
 /**

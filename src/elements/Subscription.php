@@ -10,6 +10,7 @@
 
 namespace statikbe\molliesubscriptions\elements;
 
+use craft\elements\User;
 use craft\helpers\UrlHelper;
 use statikbe\molliesubscriptions\actions\ExportAllSubscriptionsAction;
 use statikbe\molliesubscriptions\elements\db\SubscriptionQuery;
@@ -17,7 +18,6 @@ use statikbe\molliesubscriptions\MollieSubscriptions;
 
 use Craft;
 use craft\base\Element;
-use craft\elements\db\ElementQuery;
 use craft\elements\db\ElementQueryInterface;
 use statikbe\molliesubscriptions\records\SubscriptionRecord;
 
@@ -95,9 +95,17 @@ class Subscription extends Element
         return new SubscriptionQuery(static::class);
     }
 
+    public function __toString(): string
+    {
+        if ($this->email) {
+            return (string)$this->email;
+        }
+        return (string)$this->id;
+    }
 
     /**
      * @return string
+     * @throws \yii\web\NotFoundHttpException
      */
     public function getUiLabel(): string
     {
@@ -109,14 +117,15 @@ class Subscription extends Element
      * @return \statikbe\molliesubscriptions\models\SubscriptionPlanModel
      * @throws \yii\web\NotFoundHttpException
      */
-    public function getPlan() {
+    public function getPlan(): \statikbe\molliesubscriptions\models\SubscriptionPlanModel
+    {
         return MollieSubscriptions::$plugin->plans->getPlanById($this->plan);
     }
 
     /**
      * @return string|null
      */
-    public function getCpEditUrl()
+    public function getCpEditUrl(): ?string
     {
         return UrlHelper::cpUrl("mollie-subscriptions/subscription/" . $this->uid);
     }
@@ -135,7 +144,6 @@ class Subscription extends Element
         $sources[] = [
             'key' => '*',
             'label' => 'All subscriptions',
-            'criteria' => ['id' => '*'],
         ];
 
         $plans = MollieSubscriptions::$plugin->plans->getAllPlans();
@@ -186,9 +194,11 @@ class Subscription extends Element
     /**
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
-        return [
+        $rules = parent::rules();
+
+        return $rules = [
             ['email', 'string'],
             ['amount', 'number'],
             [['email'], 'required']
@@ -203,7 +213,7 @@ class Subscription extends Element
         return false;
     }
 
-    public function getStatus()
+    public function getStatus(): ?string
     {
         return $this->subscriptionStatus;
     }
@@ -224,31 +234,41 @@ class Subscription extends Element
         ];
     }
 
+
     // Indexes, etc.
     // -------------------------------------------------------------------------
 
-    /**
-     * @return string The HTML for the editor HUD
-     */
-    public function getEditorHtml(): string
+//    /**
+//     * @return string The HTML for the editor HUD
+//     */
+//    Not in use so was removed
+//    public function getEditorHtml(): string
+//    {
+//        $html = Craft::$app->getView()->renderTemplateMacro('_includes/forms', 'textField', [
+//            [
+//                'label' => Craft::t('app', 'Title'),
+//                'siteId' => $this->siteId,
+//                'id' => 'title',
+//                'name' => 'title',
+//                'value' => $this->title,
+//                'errors' => $this->getErrors('title'),
+//                'first' => true,
+//                'autofocus' => true,
+//                'required' => true
+//            ]
+//        ]);
+//
+//        $html .= parent::getEditorHtml();
+//
+//        return $html;
+//    }
+
+    public function canView(User $user): bool
     {
-        $html = Craft::$app->getView()->renderTemplateMacro('_includes/forms', 'textField', [
-            [
-                'label' => Craft::t('app', 'Title'),
-                'siteId' => $this->siteId,
-                'id' => 'title',
-                'name' => 'title',
-                'value' => $this->title,
-                'errors' => $this->getErrors('title'),
-                'first' => true,
-                'autofocus' => true,
-                'required' => true
-            ]
-        ]);
-
-        $html .= parent::getEditorHtml();
-
-        return $html;
+        if($user->can("accessPlugin-mollie-subscriptions")) {
+            return true;
+        }
+        return false;
     }
 
     // Events
@@ -270,8 +290,9 @@ class Subscription extends Element
      * @param bool $isNew Whether the element is brand new
      *
      * @return void
+     * @throws \yii\db\Exception
      */
-    public function afterSave(bool $isNew)
+    public function afterSave(bool $isNew): void
     {
         if ($isNew) {
             \Craft::$app->db->createCommand()
@@ -306,7 +327,10 @@ class Subscription extends Element
         return true;
     }
 
-    public function afterDelete()
+    /**
+     * @throws \yii\db\Exception
+     */
+    public function afterDelete(): void
     {
         \Craft::$app->db->createCommand()
             ->delete(SubscriptionRecord::tableName(), ['id' => $this->id])

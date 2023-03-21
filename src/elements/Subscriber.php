@@ -13,6 +13,7 @@ namespace statikbe\molliesubscriptions\elements;
 use Craft;
 use craft\base\Element;
 use craft\elements\db\ElementQueryInterface;
+use craft\elements\User;
 use craft\helpers\UrlHelper;
 use statikbe\molliesubscriptions\actions\ExportAllSubscribersAction;
 use statikbe\molliesubscriptions\elements\db\SubscriberQuery;
@@ -87,9 +88,7 @@ class Subscriber extends Element
         return false;
     }
 
-    /**
-     * @return ElementQueryInterface The newly created [[ElementQueryInterface]] instance.
-     */
+
     public static function find(): ElementQueryInterface
     {
         return new SubscriberQuery(static::class);
@@ -114,7 +113,6 @@ class Subscriber extends Element
         $sources[] = [
             'key' => '*',
             'label' => 'All',
-            'criteria' => ['id' => '*'],
         ];
 
         return $sources;
@@ -173,7 +171,7 @@ class Subscriber extends Element
     /**
      * @return string|null
      */
-    public function getCpEditUrl()
+    public function getCpEditUrl(): ?string
     {
         return UrlHelper::cpUrl("mollie-subscriptions/subscribers/" . $this->uid);
     }
@@ -184,7 +182,7 @@ class Subscriber extends Element
     /**
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             ['email', 'string'],
@@ -198,6 +196,14 @@ class Subscriber extends Element
      */
     public function getIsEditable(): bool
     {
+        return false;
+    }
+
+    public function canView(User $user): bool
+    {
+        if($user->can("accessPlugin-mollie-subscriptions")) {
+            return true;
+        }
         return false;
     }
 
@@ -223,8 +229,9 @@ class Subscriber extends Element
      * @param bool $isNew Whether the element is brand new
      *
      * @return void
+     * @throws \yii\db\Exception
      */
-    public function afterSave(bool $isNew)
+    public function afterSave(bool $isNew): void
     {
         if ($isNew) {
             \Craft::$app->db->createCommand()

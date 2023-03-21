@@ -46,7 +46,7 @@ class SubscriptionPlanModel extends Model
 
     public $uid;
 
-    public function behaviors()
+    public function behaviors(): array
     {
         $behaviors = parent::behaviors();
         $behaviors['fieldLayout'] = [
@@ -56,7 +56,7 @@ class SubscriptionPlanModel extends Model
         return $behaviors;
     }
 
-    public function rules()
+    public function rules(): array
     {
         return [
             [['title', 'handle', 'currency', 'description', 'interval', 'intervalType'], 'required'],
@@ -66,12 +66,16 @@ class SubscriptionPlanModel extends Model
         ];
     }
 
-    public function validateInterval()
-    {
-        // TODO
-        dd($this);
-    }
+//    public function validateInterval()
+//    {
+//        // TODO
+//        dd($this);
+//    }
 
+    /**
+     * @throws \craft\errors\DeprecationException
+     * @throws \yii\web\NotFoundHttpException
+     */
     public function validateHandle()
     {
         $validator = new HandleValidator();
@@ -83,7 +87,10 @@ class SubscriptionPlanModel extends Model
         }
     }
 
-    public function getConfig()
+    /**
+     * @throws \Exception
+     */
+    public function getConfig(): array
     {
         $config = [
             'title' => $this->title,

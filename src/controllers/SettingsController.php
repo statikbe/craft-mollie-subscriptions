@@ -8,13 +8,20 @@ use statikbe\molliesubscriptions\MollieSubscriptions;
 
 class SettingsController extends Controller
 {
-    public function actionIndex()
+    protected int|bool|array $allowAnonymous = ['index', 'save'];
+
+    public function actionIndex(): \yii\web\Response
     {
         $settings = MollieSubscriptions::getInstance()->getSettings();
         return $this->renderTemplate('mollie-subscriptions/_settings.twig', ['settings' => $settings]);
     }
 
-    public function actionSave()
+    /**
+     * @throws \yii\base\InvalidConfigException
+     * @throws \craft\errors\MissingComponentException
+     * @throws \yii\web\BadRequestHttpException
+     */
+    public function actionSave(): \yii\web\Response
     {
         $this->requirePostRequest();
 

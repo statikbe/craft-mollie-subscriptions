@@ -22,6 +22,7 @@ use statikbe\molliesubscriptions\services\Mollie;
 use statikbe\molliesubscriptions\services\Payments;
 use statikbe\molliesubscriptions\services\Plans;
 use statikbe\molliesubscriptions\services\Subscriber;
+use statikbe\molliesubscriptions\services\TestService;
 use statikbe\molliesubscriptions\variables\MollieSubscriptionsVariable;
 use statikbe\molliesubscriptions\elements\Subscription as SubscriptionElement;
 
@@ -82,7 +83,7 @@ class MollieSubscriptions extends Plugin
      *
      * @var MollieSubscriptions
      */
-    public static $plugin;
+    public static MollieSubscriptions $plugin;
 
     // Public Properties
     // =========================================================================
@@ -92,7 +93,7 @@ class MollieSubscriptions extends Plugin
      *
      * @var string
      */
-    public $schemaVersion = '1.0.0';
+    public string $schemaVersion = '1.0.0';
 
     // Public Methods
     // =========================================================================
@@ -176,9 +177,11 @@ class MollieSubscriptions extends Plugin
                 CraftVariableBehavior::class,
             ]);
         });
+
+//        TestService::instance()->actionWebhook();
     }
 
-    public function getCpNavItem()
+    public function getCpNavItem(): ?array
     {
         $subNavs = [];
         $navItem = parent::getCpNavItem();
@@ -213,14 +216,14 @@ class MollieSubscriptions extends Plugin
         return $navItem;
     }
 
-    public function getSettingsResponse()
+    public function getSettingsResponse(): \yii\console\Response|\craft\web\Response
     {
         return Craft::$app->getResponse()->redirect(UrlHelper::cpUrl('mollie-subscriptions/settings'));
     }
 
     // Protected Methods
     // =========================================================================
-    protected function createSettingsModel()
+    protected function createSettingsModel(): Settings
     {
         return new Settings();
     }
