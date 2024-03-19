@@ -14,6 +14,8 @@ use yii\web\NotFoundHttpException;
 
 class Plans extends Component
 {
+    public const CONFIG_FORMS_PATH = 'mollieSubscriptions';
+
     public function save(SubscriptionPlanModel $planModel): bool
     {
         $planRecord = false;
@@ -23,23 +25,11 @@ class Plans extends Component
             ]);
         }
 
-        if (!$planRecord) {
-            $planRecord = new SubscriptionPlanRecord();
-        }
+        $configPath = self::CONFIG_FORMS_PATH . '.' . $planModel->uid;
+        $configData = $planModel->getConfig();
+        Craft::$app->projectConfig->set($configPath, $configData);
 
-        $planRecord->title = $planModel->title;
-        $planRecord->handle = $planModel->handle;
-        $planRecord->currency = $planModel->currency;
-        $planRecord->description = $planModel->description;
-        $planRecord->amount = $planModel->amount;
-        $planRecord->times = $planModel->times;
-        $planRecord->intervalType = $planModel->intervalType;
-        $planRecord->interval = $planModel->interval;
-        $planRecord->fieldLayout = $planModel->getFieldLayoutId();
-
-        $fieldLayout = Craft::$app->getFields()->saveLayout($planModel->getFieldLayout());
-
-        return $planRecord->save();
+        return true;
     }
 
     /**
