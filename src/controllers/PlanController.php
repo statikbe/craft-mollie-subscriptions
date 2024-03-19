@@ -10,6 +10,7 @@
 
 namespace statikbe\molliesubscriptions\controllers;
 
+use craft\records\FieldLayout;
 use statikbe\molliesubscriptions\elements\Subscription;
 use statikbe\molliesubscriptions\models\SubscriptionPlanModel;
 use statikbe\molliesubscriptions\MollieSubscriptions;
@@ -72,7 +73,8 @@ class PlanController extends Controller
      */
     public function actionSave(): ?\yii\web\Response
     {
-        $data = Craft::$app->getRequest()->getBodyParam('data');
+        $data = Craft::$app->getRequest()->getBodyParams();
+        $data['id'] = Craft::$app->getRequest()->getSegment(3);
 
         if (!isset($data['id']) or empty($data['planId'])) {
             $planModel = new SubscriptionPlanModel();
@@ -97,9 +99,10 @@ class PlanController extends Controller
         $fieldLayout = Craft::$app->getFields()->assembleLayoutFromPost();
         $fieldLayout->type = Subscription::class;
         $planModel->setFieldLayout($fieldLayout);
-
+        $planModel->setFieldLayoutId($fieldLayout->id);
+        
         // Save it
-        if (!$planModel->validate()) {
+        if ($planModel->validate()) {
             MollieSubscriptions::getInstance()->plans->save($planModel);
             $this->redirectToPostedUrl();
         } else {
