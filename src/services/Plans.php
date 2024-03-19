@@ -35,7 +35,9 @@ class Plans extends Component
         $planRecord->times = $planModel->times;
         $planRecord->intervalType = $planModel->intervalType;
         $planRecord->interval = $planModel->interval;
-        $planRecord->fieldLayout = $planModel->fieldLayout;
+        $planRecord->fieldLayout = $planModel->getFieldLayoutId();
+
+        $fieldLayout = Craft::$app->getFields()->saveLayout($planModel->getFieldLayout());
 
         return $planRecord->save();
     }
