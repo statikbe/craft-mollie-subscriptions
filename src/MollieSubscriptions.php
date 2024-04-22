@@ -146,6 +146,7 @@ class MollieSubscriptions extends Plugin
                 $event->rules['mollie-subscriptions/plans/add'] = 'mollie-subscriptions/plan/edit';
                 $event->rules['mollie-subscriptions/plans/<planId:\d+>'] = 'mollie-subscriptions/plan/edit';
                 $event->rules['mollie-subscriptions/settings'] = 'mollie-subscriptions/settings/index';
+                $event->rules['mollie-subscriptions/cancel-donation'] = 'mollie-subscriptions/subscriptions/cp-cancel';
             }
         );
 

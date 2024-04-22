@@ -11,14 +11,18 @@
 namespace statikbe\molliesubscriptions\controllers;
 
 use Craft;
+use craft\errors\ElementNotFoundException;
 use craft\helpers\ConfigHelper;
 use craft\helpers\UrlHelper;
 use craft\web\Controller;
+use Mollie\Api\Exceptions\ApiException;
 use statikbe\molliesubscriptions\elements\Subscription;
 use statikbe\molliesubscriptions\models\SubscriptionPaymentModel;
 use statikbe\molliesubscriptions\MollieSubscriptions;
 use statikbe\molliesubscriptions\services\Export;
+use yii\base\Exception;
 use yii\base\InvalidConfigException;
+use yii\web\BadRequestHttpException;
 use yii\web\HttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\UnauthorizedHttpException;
@@ -187,6 +191,28 @@ class SubscriptionsController extends Controller
     {
         $mollieId = Craft::$app->getRequest()->getRequiredBodyParam('id');
         $customerId = Craft::$app->getRequest()->getRequiredBodyParam('customer');
+        $response = MollieSubscriptions::$plugin->mollie->cancelSubscription($mollieId, $customerId);
+        if($response && $response->status === 'canceled') {
+            $subscription = Subscription::findOne(['subscriptionId' => $mollieId]);
+            $subscription->subscriptionStatus = Subscription::STATUS_CANCELED;
+            if (MollieSubscriptions::getInstance()->payments->saveElement($subscription)) {
+                $this->redirectToPostedUrl();
+            }
+        }
+    }
+
+    /**
+     * @throws ElementNotFoundException
+     * @throws \Throwable
+     * @throws ApiException
+     * @throws Exception
+     * @throws BadRequestHttpException
+     */
+    public function actionCpCancel(): void
+    {
+        $request = Craft::$app->request;
+        $mollieId = $request->getQueryParam('id');
+        $customerId = $request->getQueryParam('customer');
         $response = MollieSubscriptions::$plugin->mollie->cancelSubscription($mollieId, $customerId);
         if($response && $response->status === 'canceled') {
             $subscription = Subscription::findOne(['subscriptionId' => $mollieId]);
