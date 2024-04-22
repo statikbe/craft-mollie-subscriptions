@@ -11,6 +11,8 @@
 namespace statikbe\molliesubscriptions\variables;
 
 use Craft;
+use statikbe\molliesubscriptions\elements\Subscriber;
+use statikbe\molliesubscriptions\elements\Subscriber as SubscriberElement;
 use statikbe\molliesubscriptions\MollieSubscriptions;
 
 /**
@@ -79,5 +81,10 @@ class MollieSubscriptionsVariable
                 return ['label' => Craft::t('mollie-subscriptions', 'Unknown'), 'color' => 'none', 'class' => 'disabled'];
 
         }
+    }
+
+    public function getSubscriberById($id): Subscriber|\craft\base\Element|array|null
+    {
+        return SubscriberElement::findOne(['id' => $id]);
     }
 }

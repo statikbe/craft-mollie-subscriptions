@@ -60,6 +60,13 @@
                 <input class="text fullwidth" disabled type="text" value="{{ element.email }}" autocomplete="off" autocorrect="off" autocapitalize="off" placeholder="Enter slug">
             </div>
         </div>
+
+        {% set subscriber = craft.subscriptions.getSubscriberById(element.subscriber) %}
+        {% if subscriber %}
+            <div class="field" style="padding-top: 1rem; padding-bottom:1rem;">
+                <a href="{{ cpUrl('mollie-subscriptions/cancel-donation/', {id: element.subscriptionId, customer: subscriber.customerId}) }}" class="btn">{{ 'Cancel donaties' }}</a>
+            </div>
+        {% endif %}
     </div>
 {% endblock %}
 
