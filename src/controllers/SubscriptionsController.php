@@ -213,12 +213,25 @@ class SubscriptionsController extends Controller
         $request = Craft::$app->request;
         $mollieId = $request->getQueryParam('id');
         $customerId = $request->getQueryParam('customer');
-        $response = MollieSubscriptions::$plugin->mollie->cancelSubscription($mollieId, $customerId);
-        if($response && $response->status === 'canceled') {
-            $subscription = Subscription::findOne(['subscriptionId' => $mollieId]);
-            $subscription->subscriptionStatus = Subscription::STATUS_CANCELED;
-            if (MollieSubscriptions::getInstance()->payments->saveElement($subscription)) {
-                $this->redirectToPostedUrl();
+        $subscription = Subscription::findOne(['subscriptionId' => $mollieId]);
+        try {
+            $response = MollieSubscriptions::$plugin->mollie->cancelSubscription($mollieId, $customerId);
+            if(isset($response) && $response->status === 'canceled') {
+                $subscription->subscriptionStatus = Subscription::STATUS_CANCELED;
+                if (MollieSubscriptions::getInstance()->payments->saveElement($subscription)) {
+                    $this->redirectToPostedUrl();
+                }
+            }
+        } catch (ApiException $error){
+            $errorCode = $error->getCode();
+            $errorMessage = $error->getPlainMessage();
+            $url = $subscription->cpEditUrl;
+            if($errorCode == 422 && $errorMessage == "Error executing API call (422: Unprocessable Entity): The subscription has been cancelled"){
+                Craft::$app->getSession()->setError('The subscription was already cancelled');
+                $this->redirect($url);
+            }else{
+                Craft::$app->getSession()->setError($errorMessage);
+                $this->redirect($url);
             }
         }
     }
