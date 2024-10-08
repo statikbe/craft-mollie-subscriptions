@@ -10,6 +10,8 @@
 
 namespace statikbe\molliesubscriptions\controllers;
 
+use Craft;
+use craft\web\Request;
 use craft\web\Controller;
 use statikbe\molliesubscriptions\elements\Subscription;
 use statikbe\molliesubscriptions\MollieSubscriptions;
@@ -56,9 +58,18 @@ class DefaultController extends Controller
      */
     public function actionEdit($uid)
     {
+        /** @var Request $request */
+        $request = Craft::$app->getRequest();
+
         $subscription = Subscription::findOne(['uid' => $uid]);
         $payments = MollieSubscriptions::$plugin->payments->getAllPaymentsForSubscription($subscription->id);
         $plan = MollieSubscriptions::$plugin->plans->getPlanById($subscription->plan);
+
+        if ($request->isPost) {
+            $subscription->setFieldvaluesFromRequest('fields');
+            Craft::$app->getElements()->saveElement($subscription);
+        }
+
         $this->renderTemplate('mollie-subscriptions/_elements/_subscriptions/_edit', [
             'element' => $subscription,
             'payments' => $payments,
