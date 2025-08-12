@@ -4,6 +4,7 @@ namespace statikbe\molliesubscriptions\services;
 
 use Craft;
 use craft\base\Component;
+use craft\helpers\DateTimeHelper;
 use craft\helpers\UrlHelper;
 use Mollie\Api\MollieApiClient;
 use Mollie\Api\Resources\Customer;
@@ -35,7 +36,7 @@ class Mollie extends Component
      */
     public function createFirstPayment(Subscription $subscription, Subscriber $subscriber, $plan, $redirect)
     {
-        if($plan->description) {
+        if ($plan->description) {
             $description = Craft::$app->getView()->renderObjectTemplate($plan->description, $subscription);
         } else {
             $description = "Order #{$subscription->id}";
@@ -89,19 +90,21 @@ class Mollie extends Component
         /** @var Customer $customer */
         $plan = MollieSubscriptions::$plugin->plans->getPlanById($subscription->plan);
 
-        if($plan->description) {
+        if ($plan->description) {
             $description = Craft::$app->getView()->renderObjectTemplate($plan->description, $subscription);
         } else {
             $description = "Order #{$subscription->id}";
         }
 
         $subscriber = Subscriber::findOne(['id' => $subscription->subscriber]);
+        $startDate = DateTimeHelper::now()->modify("+ {$plan->interval} {$plan->intervalType}");
         $customer = $this->getCustomer($subscriber->customerId);
         $data = [
             "amount" => [
                 "value" => $subscription->amount,
-                "currency" => $plan->currency
+                "currency" => $plan->currency,
             ],
+            "startDate" => $startDate->format('YYYY-MM-DD'),
             "interval" => $plan->interval . ' ' . $plan->intervalType,
             "description" => $description,
             "webhookUrl" => "{$this->baseUrl}mollie-subscriptions/subscriptions/webhook"
