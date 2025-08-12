@@ -104,7 +104,7 @@ class Mollie extends Component
                 "value" => $subscription->amount,
                 "currency" => $plan->currency,
             ],
-            "startDate" => $startDate->format('YYYY-MM-DD'),
+            "startDate" => $startDate->format('Y-m-d'),
             "interval" => $plan->interval . ' ' . $plan->intervalType,
             "description" => $description,
             "webhookUrl" => "{$this->baseUrl}mollie-subscriptions/subscriptions/webhook"
