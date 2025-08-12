@@ -2,7 +2,7 @@
   "name": "statikbe/craft-mollie-subscriptions",
   "description": "Subscriptions through Mollie",
   "type": "craft-plugin",
-  "version": "2.0.6",
+  "version": "2.0.7",
   "keywords": [
     "craft",
     "cms",
